@@ -63,12 +63,21 @@ export interface IUser extends Document {
   email: string;
   contactNumber: string;
   passwordHash: string;
+  passwordResetToken:  string | null;   // ← NEW: hashed token, set on forgot-password
+  passwordResetExpiry: Date   | null;   // ← NEW: when that token expires (1 hr window)
   
   // --- System Data ---
   points: number;
   skIdNumber?: string; 
   qrCode?: string;     
-  status: 'Pending' | 'Approved';
+  status: 'Pending' | 'Approved' | 'Rejected' | 'Archived';
+  idPrinted: boolean;
+  datePrinted: Date | null;
+  dateApproved: Date | null;
+  dateRejected: Date | null;
+  dateArchived: Date | null;
+  eventRegistrations: Array<mongoose.Types.ObjectId>;
+  eventParticipations: Array<mongoose.Types.ObjectId>;
 
   // --- Demographics ---
   // Using typeof allows TS to automatically grab the values from the arrays above
@@ -104,11 +113,20 @@ const UserSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
   contactNumber: { type: String, required: true },
   passwordHash: { type: String, required: true },
+  passwordResetToken:  { type: String, default: null },   // ← NEW
+  passwordResetExpiry: { type: Date,   default: null },   // ← NEW
   
   points: { type: Number, default: 0 },
   skIdNumber: { type: String, default: null },
   qrCode: { type: String, default: null },     
-  status: { type: String, enum: ['Pending', 'Approved'], default: 'Pending' },
+  status: { type: String, enum: ['Pending', 'Approved', 'Rejected', 'Archived'], default: 'Pending' },
+  idPrinted: { type: Boolean, default: false },
+  datePrinted: { type: Date, default: null },
+  dateApproved: { type: Date, default: null },
+  dateRejected: { type: Date, default: null },
+  dateArchived: { type: Date, default: null },
+  eventRegistrations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
+  eventParticipations: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }],
 
   // FIXED: Added enum validation to all these fields
   civilStatus: { type: String, enum: CIVIL_STATUS_OPTIONS, required: true },
