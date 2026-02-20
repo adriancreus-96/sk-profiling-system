@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Shield, Lock } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const AdminLogin = () => {

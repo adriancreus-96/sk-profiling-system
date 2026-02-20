@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { 
   X, MapPin, User as UserIcon, Calendar, Hash, Mail, Phone, 
-  GraduationCap, Briefcase, Heart, CheckCircle, Award, Home,
-  Clock, Tag
+  GraduationCap, Briefcase, Heart, CheckCircle, Award, Home, Tag
 } from 'lucide-react';
 import axios from 'axios';
 

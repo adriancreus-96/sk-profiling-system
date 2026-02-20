@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { 
   X, MapPin, User as UserIcon, Calendar, Hash, Mail, Phone, 
-  GraduationCap, Briefcase, Heart, CheckCircle, Award, Home, Camera, Printer,
-  Clock, Users, Tag
+  GraduationCap, Briefcase, Heart, CheckCircle, Award, Home, Camera, Printer, Tag
 } from 'lucide-react';
 import axios from 'axios';
 import PrintIDModule from './PrintIDModal';
