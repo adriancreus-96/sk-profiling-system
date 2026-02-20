@@ -8,9 +8,6 @@ import User, { IUser } from '../models/User';
 import jwt from 'jsonwebtoken';
 import { Readable } from 'stream';
 
-// Import Brevo SDK correctly
-const SibApiV3Sdk = require('@getbrevo/brevo');
-
 // Use require for cloudinary
 const cloudinary = require('cloudinary').v2;
 
@@ -28,10 +25,33 @@ console.log('🔧 Cloudinary config in controller:', {
   api_secret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Missing'
 });
 
-// Configure Brevo API
-const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-const apiKey = apiInstance.authentications['apiKey'];
-apiKey.apiKey = process.env.BREVO_API_KEY || '';
+// Helper function to send email via Brevo API
+const sendBrevoEmail = async (to: string, subject: string, htmlContent: string) => {
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'api-key': process.env.BREVO_API_KEY || '',
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      sender: {
+        name: 'SK Youth Registration',
+        email: process.env.EMAIL_USER || 'noreply@skprofiling.com',
+      },
+      to: [{ email: to }],
+      subject: subject,
+      htmlContent: htmlContent,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Brevo API error: ${error}`);
+  }
+
+  return response.json();
+};
 
 // Store verification codes temporarily (in production, use Redis or database)
 const verificationCodes = new Map<string, { code: string; expiresAt: number }>();
@@ -116,14 +136,10 @@ export const sendVerificationCode = async (req: Request, res: Response) => {
     console.log(`📧 Sending verification code to ${email}: ${code}`);
 
     // Send email using Brevo API
-    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    sendSmtpEmail.subject = 'Email Verification Code - SK Youth Registration';
-    sendSmtpEmail.sender = { 
-      email: process.env.EMAIL_USER || 'noreply@skprofiling.com', 
-      name: 'SK Youth Registration' 
-    };
-    sendSmtpEmail.to = [{ email }];
-    sendSmtpEmail.htmlContent = `
+    await sendBrevoEmail(
+      email,
+      'Email Verification Code - SK Youth Registration',
+      `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; background-color: #f9fafb;">
         <div style="background-color: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <h2 style="color: #2563eb; margin-bottom: 16px; font-size: 24px;">Email Verification</h2>
@@ -145,9 +161,8 @@ export const sendVerificationCode = async (req: Request, res: Response) => {
           </p>
         </div>
       </div>
-    `;
-
-    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    `
+    );
 
     console.log(`✅ Verification code sent to ${email}`);
 
@@ -389,14 +404,10 @@ export const forgotPassword = async (req: Request, res: Response) => {
     const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${rawToken}&email=${user.email}`;
 
     // Send password reset email using Brevo API
-    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-    sendSmtpEmail.subject = 'SK System – Password Reset Request';
-    sendSmtpEmail.sender = { 
-      email: process.env.EMAIL_USER || 'noreply@skprofiling.com', 
-      name: 'SK System' 
-    };
-    sendSmtpEmail.to = [{ email: user.email }];
-    sendSmtpEmail.htmlContent = `
+    await sendBrevoEmail(
+      user.email,
+      'SK System – Password Reset Request',
+      `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
         <h2 style="color: #1e40af;">Password Reset Request</h2>
         <p style="color: #4b5563;">
@@ -414,9 +425,8 @@ export const forgotPassword = async (req: Request, res: Response) => {
           If you did not request a password reset, you can safely ignore this email.
         </p>
       </div>
-    `;
-
-    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    `
+    );
 
     res.status(200).json({
       message: 'If an account with that email exists, a reset link has been sent.',
