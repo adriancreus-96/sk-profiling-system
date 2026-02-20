@@ -97,57 +97,59 @@ const RegistrationForm = () => {
 
   // Send verification code to email
   const sendVerificationCode = async () => {
-    if (!formData.email) {
-      alert('Please enter your email address first');
-      return;
-    }
+  if (!formData.email) {
+    alert('Please enter your email address first');
+    return;
+  }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      alert('Please enter a valid email address');
-      return;
-    }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.email)) {
+    alert('Please enter a valid email address');
+    return;
+  }
 
-    setEmailVerification(prev => ({ ...prev, isSending: true }));
+  setEmailVerification(prev => ({ ...prev, isSending: true }));
 
-    try {
-      const response = await fetch(`${API_URL}/api/auth/send-verification-code`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email }),
-      });
+  try {
+    console.log('🔍 Sending to:', `${API_URL}/api/auth/send-verification-code`); // Debug line
+    
+    const response = await fetch(`${API_URL}/api/auth/send-verification-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: formData.email }),
+    });
 
-      const data = await response.json();
+    console.log('📡 Response status:', response.status); // Debug line
+    const data = await response.json();
+    console.log('📦 Response data:', data); // Debug line
 
-      if (response.ok) {
-        alert('Verification code sent to your email!');
-        setEmailVerification(prev => ({
-          ...prev,
-          isCodeSent: true,
-          isSending: false,
-          timer: 60, // 60 second cooldown
-        }));
+    if (response.ok) {
+      alert('Verification code sent to your email!');
+      setEmailVerification(prev => ({
+        ...prev,
+        isCodeSent: true,
+        isSending: false,
+        timer: 60,
+      }));
 
-        // Start countdown timer
-        let timeLeft = 60;
-        const countdown = setInterval(() => {
-          timeLeft -= 1;
-          setEmailVerification(prev => ({ ...prev, timer: timeLeft }));
-          if (timeLeft <= 0) {
-            clearInterval(countdown);
-          }
-        }, 1000);
-      } else {
-        alert('Error: ' + (data.message || 'Failed to send verification code'));
-        setEmailVerification(prev => ({ ...prev, isSending: false }));
-      }
-    } catch (error) {
-      console.error(error);
-      alert('Error: Failed to send verification code');
+      let timeLeft = 60;
+      const countdown = setInterval(() => {
+        timeLeft -= 1;
+        setEmailVerification(prev => ({ ...prev, timer: timeLeft }));
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+        }
+      }, 1000);
+    } else {
+      alert('Error: ' + (data.message || 'Failed to send verification code'));
       setEmailVerification(prev => ({ ...prev, isSending: false }));
     }
-  };
+  } catch (error) {
+    console.error('❌ Full error:', error); // Better error logging
+    alert('Error: Failed to connect to server. Please try again.');
+    setEmailVerification(prev => ({ ...prev, isSending: false }));
+  }
+};
 
   // Verify the code entered by user
   const verifyCode = async () => {
