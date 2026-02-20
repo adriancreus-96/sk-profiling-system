@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 
+
+const API_URL = import.meta.env.VITE_API_URL
 interface EventFormData {
   title: string;
   description: string;
@@ -177,7 +179,7 @@ const PostEvent = () => {
 
       if (isEditMode) {
         await axios.put(
-          `http://localhost:5000/api/events/admin/${editEvent._id}`,
+          `${API_URL}/api/events/admin/${editEvent._id}`,
           submitData,
           { headers: { 'Authorization': `Bearer ${token}` } }
           // Note: Do NOT set Content-Type manually — axios sets it with boundary
@@ -185,7 +187,7 @@ const PostEvent = () => {
         alert('Event updated successfully!');
       } else {
         const response = await axios.post(
-          'http://localhost:5000/api/events',
+          `${API_URL}/api/events`,
           submitData,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );

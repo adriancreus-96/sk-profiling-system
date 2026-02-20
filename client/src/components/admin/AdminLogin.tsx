@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -11,7 +13,7 @@ const AdminLogin = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-        const response = await axios.post('http://localhost:5000/api/admin/login', {
+        const response = await axios.post(`${API_URL}/api/admin/login`, {
         username,
         password
         });

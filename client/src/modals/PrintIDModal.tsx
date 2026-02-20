@@ -3,6 +3,8 @@ import { useReactToPrint } from 'react-to-print';
 import { QRCodeSVG } from 'qrcode.react';
 import { type UserData } from './UserViewModal';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 interface PrintIDModuleProps {
   user: UserData;
   onClose: () => void;
@@ -69,7 +71,7 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({ user, onClose, onPrintCom
     if (user.profilePicture) {
       return user.profilePicture.startsWith('http') 
         ? user.profilePicture 
-        : `http://localhost:5000${user.profilePicture}`;
+        : `${API_URL}${user.profilePicture}`;
     }
     return `https://ui-avatars.com/api/?name=${user.firstName}+${user.lastName}&size=400&background=1e40af&color=fff`;
   };

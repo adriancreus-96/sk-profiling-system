@@ -6,6 +6,8 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 interface AttendeeData {
   _id: string;
   skIdNumber?: string;
@@ -87,7 +89,7 @@ const AttendeeProfileModal: React.FC<AttendeeProfileModalProps> = ({
     try {
       const token = localStorage.getItem('adminToken');
       const response = await axios.get(
-        `http://localhost:5000/api/events/user/${userId}/attendance`,
+        `${API_URL}/api/events/user/${userId}/attendance`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEventsAttended(response.data || []);

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, MapPin, Briefcase, Flag, ArrowLeft, UserPlus, Camera, X } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const CreateProfile = () => {
   const navigate = useNavigate();
   const today = new Date();
@@ -94,7 +96,7 @@ const CreateProfile = () => {
         submitData.append('profilePicture', profilePicture);
       }
 
-      const response = await fetch('http://localhost:5000/api/admin/approve-and-create-profile', {
+      const response = await fetch(`${API_URL}/api/admin/approve-and-create-profile`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`

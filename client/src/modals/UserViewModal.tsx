@@ -7,6 +7,8 @@ import {
 import axios from 'axios';
 import PrintIDModule from './PrintIDModal';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 // Complete User Data Interface matching the User model
 export interface UserData {
   _id: string;
@@ -117,7 +119,7 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
     try {
       const token = localStorage.getItem('adminToken');
       const response = await axios.get(
-        `http://localhost:5000/api/events/user/${userId}/attendance`,
+        `${API_URL}/api/events/user/${userId}/attendance`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEventsAttended(response.data || []);

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, MapPin, CheckCircle, Clock, Edit2, Save, X, Camera } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 interface UserData {
   _id: string;
   firstName: string;
@@ -52,7 +54,7 @@ const UserProfile = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/api/user/profile`, {
+        const response = await fetch(`${API_URL}/api/user/profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -146,7 +148,7 @@ const UserProfile = () => {
         // Append the new profile picture
         formData.append('profilePicture', newProfilePicture);
         
-        const response = await fetch(`http://localhost:5000/api/user/update-profile`, {
+        const response = await fetch(`${API_URL}/api/user/update-profile`, {
           method: 'PUT',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -169,7 +171,7 @@ const UserProfile = () => {
         }
       } else {
         // No new picture, send JSON
-        const response = await fetch(`http://localhost:5000/api/user/update-profile`, {
+        const response = await fetch(`${API_URL}/api/user/update-profile`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

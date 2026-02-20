@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { X, QrCode, CheckCircle, AlertCircle, Camera } from 'lucide-react';
 import jsQR from 'jsqr';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 interface Event {
   _id: string;
   eventId: string;
@@ -171,7 +173,7 @@ const QRScannerModal: React.FC<QRScannerModalProps> = ({
 
       // Call backend to mark attendance
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('http://localhost:5000/api/events/attendance', {
+      const response = await fetch(`${API_URL}/api/events/attendance`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

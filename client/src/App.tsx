@@ -11,6 +11,9 @@ import CreateProfile from './components/admin/CreateProfile';
 import PostEvent from './components/admin/PostEvent';
 import ViewEvents from './components/admin/ViewEvents';
 import HomePage from './components/client/HomePage';
+
+const API_URL = import.meta.env.VITE_API_URL
+
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const token = localStorage.getItem('token');
   return token ? <>{children}</> : <Navigate to="/login" replace />;
@@ -57,7 +60,7 @@ const ForgotPasswordForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
+      const response = await fetch(`${API_URL}/api/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Lock, CheckCircle, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const ResetPasswordForm = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
@@ -79,7 +81,7 @@ const ResetPasswordForm = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/auth/reset-password', {
+      const response = await fetch(`${API_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token, email, newPassword }),

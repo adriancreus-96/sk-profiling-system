@@ -56,6 +56,8 @@ const AdminProfiles = () => {
   const [statusFilter, setStatusFilter] = useState<'All' | 'Pending' | 'Approved'>('All');
   const [archiveStatusFilter, setArchiveStatusFilter] = useState<'All' | 'Rejected' | 'Archived'>('All');
 
+  const API_URL = import.meta.env.VITE_API_URL
+
   // FETCH DATA
   useEffect(() => {
     const fetchUsers = async () => {
@@ -66,7 +68,7 @@ const AdminProfiles = () => {
       }
 
       try {
-        const response = await axios.get('http://localhost:5000/api/admin/users', {
+        const response = await axios.get(`${API_URL}/api/admin/users`, {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -181,7 +183,7 @@ const AdminProfiles = () => {
         formData.append('profilePicture', newProfilePicture);
 
         response = await axios.put(
-          `http://localhost:5000/api/admin/update-user/${updatedUser._id}`,
+          `${API_URL}/api/admin/update-user/${updatedUser._id}`,
           formData,
           {
             headers: { Authorization: `Bearer ${token}` }
@@ -191,7 +193,7 @@ const AdminProfiles = () => {
       } else {
         // No new picture — send as JSON
         response = await axios.put(
-          `http://localhost:5000/api/admin/update-user/${updatedUser._id}`,
+          `${API_URL}/api/admin/update-user/${updatedUser._id}`,
           updatedUser,
           {
             headers: {
@@ -239,7 +241,7 @@ const AdminProfiles = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/admin/approve/${userId}`,
+        `${API_URL}/api/admin/approve/${userId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -283,7 +285,7 @@ const AdminProfiles = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/admin/reject/${userId}`,
+        `${API_URL}/api/admin/reject/${userId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -314,7 +316,7 @@ const AdminProfiles = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/admin/restore/${userId}`,
+        `${API_URL}/api/admin/restore/${userId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -345,7 +347,7 @@ const AdminProfiles = () => {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/admin/permanent-delete/${userId}`,
+        `${API_URL}/api/admin/permanent-delete/${userId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Calendar, MapPin, Users, Award, Tag, Clock, Loader2 } from 'lucide-react';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 interface Event {
   id: string;
   eventId: string;
@@ -31,7 +33,7 @@ const EventsPage = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-      const response = await axios.get('http://localhost:5000/api/events', config);
+      const response = await axios.get(`${API_URL}/api/events`, config);
       setEvents(response.data);
       setError(null);
     } catch (err: any) {
@@ -53,7 +55,7 @@ const EventsPage = () => {
     setRegistering(eventId);
     try {
       await axios.post(
-        `http://localhost:5000/api/events/${eventId}/register`,
+        `${API_URL}/api/events/${eventId}/register`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -75,7 +77,7 @@ const EventsPage = () => {
     setRegistering(eventId);
     try {
       await axios.post(
-        `http://localhost:5000/api/events/${eventId}/unregister`,
+        `${API_URL}/api/events/${eventId}/unregister`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

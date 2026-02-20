@@ -7,6 +7,7 @@ import {
 import axios from 'axios';
 import AttendeeProfileModal from '../../modals/AttendeeProfileModal';
 import QRScannerModal from '../../modals/QRScannerModal';
+const API_URL = import.meta.env.VITE_API_URL
 
 interface Event {
   _id: string;
@@ -91,7 +92,7 @@ const ViewEvents = () => {
       const token = localStorage.getItem('adminToken');
       if (!token) { navigate('/admin/login'); return; }
 
-      const response = await axios.get('http://localhost:5000/api/events/admin/all', {
+      const response = await axios.get(`${API_URL}/api/events/admin/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setEvents(response.data);
@@ -151,7 +152,7 @@ const ViewEvents = () => {
     try {
       const token = localStorage.getItem('adminToken');
       await axios.put(
-        `http://localhost:5000/api/events/admin/${eventId}`,
+        `${API_URL}/api/events/admin/${eventId}`,
         { status: 'Cancelled' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -168,7 +169,7 @@ const ViewEvents = () => {
     try {
       const token = localStorage.getItem('adminToken');
       await axios.delete(
-        `http://localhost:5000/api/events/admin/${eventId}`,
+        `${API_URL}/api/events/admin/${eventId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       alert('Event deleted successfully');
@@ -183,7 +184,7 @@ const ViewEvents = () => {
     try {
       const token = localStorage.getItem('adminToken');
       const response = await axios.get(
-        `http://localhost:5000/api/events/admin/${event._id}`,
+        `${API_URL}/api/events/admin/${event._id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSelectedEvent(event);
