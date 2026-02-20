@@ -3,7 +3,6 @@ dotenv.config();
 
 import { Request, Response } from 'express';
 import User from '../models/User';
-import { AuthRequest } from '../middleware/authMiddleware';
 import { Readable } from 'stream';
 
 // Use require for cloudinary
@@ -50,7 +49,7 @@ const uploadToCloudinary = (buffer: Buffer, originalname: string): Promise<strin
   });
 };
 
-export const getUserProfile = async (req: AuthRequest, res: Response) => {
+export const getUserProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id;
     
@@ -71,7 +70,7 @@ export const getUserProfile = async (req: AuthRequest, res: Response) => {
   }
 };
 
-export const updateUserProfile = async (req: AuthRequest, res: Response) => {
+export const updateUserProfile = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id;
     
