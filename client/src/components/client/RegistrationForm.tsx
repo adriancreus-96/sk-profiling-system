@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { User, MapPin, Briefcase, Lock, Flag, Camera, X, Eye, EyeOff, Mail, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL
+
 const RegistrationForm = () => {
   const today = new Date();
   const maxDate = new Date(today.getFullYear() - 15, today.getMonth(), today.getDate())
@@ -157,7 +159,7 @@ const RegistrationForm = () => {
     setEmailVerification(prev => ({ ...prev, isVerifying: true }));
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/verify-code', {
+      const response = await fetch(`${API_URL}/api/auth/verify-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -258,7 +260,7 @@ const RegistrationForm = () => {
         submitData.append('profilePicture', profilePicture);
       }
 
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(`${API_URL}/api/auth/register`, {
         method: 'POST',
         body: submitData,
       });
