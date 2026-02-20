@@ -9,7 +9,7 @@ import jwt from 'jsonwebtoken';
 import { Readable } from 'stream';
 
 // Import Brevo SDK correctly
-const brevo = require('@getbrevo/brevo');
+const SibApiV3Sdk = require('@getbrevo/brevo');
 
 // Use require for cloudinary
 const cloudinary = require('cloudinary').v2;
@@ -29,11 +29,9 @@ console.log('🔧 Cloudinary config in controller:', {
 });
 
 // Configure Brevo API
-const apiInstance = new brevo.TransactionalEmailsApi();
-apiInstance.setApiKey(
-  brevo.TransactionalEmailsApiApiKeys.apiKey,
-  process.env.BREVO_API_KEY || ''
-);
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+const apiKey = apiInstance.authentications['apiKey'];
+apiKey.apiKey = process.env.BREVO_API_KEY || '';
 
 // Store verification codes temporarily (in production, use Redis or database)
 const verificationCodes = new Map<string, { code: string; expiresAt: number }>();
@@ -118,7 +116,7 @@ export const sendVerificationCode = async (req: Request, res: Response) => {
     console.log(`📧 Sending verification code to ${email}: ${code}`);
 
     // Send email using Brevo API
-    const sendSmtpEmail = new brevo.SendSmtpEmail();
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
     sendSmtpEmail.subject = 'Email Verification Code - SK Youth Registration';
     sendSmtpEmail.sender = { 
       email: process.env.EMAIL_USER || 'noreply@skprofiling.com', 
@@ -391,7 +389,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${rawToken}&email=${user.email}`;
 
     // Send password reset email using Brevo API
-    const sendSmtpEmail = new brevo.SendSmtpEmail();
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
     sendSmtpEmail.subject = 'SK System – Password Reset Request';
     sendSmtpEmail.sender = { 
       email: process.env.EMAIL_USER || 'noreply@skprofiling.com', 
