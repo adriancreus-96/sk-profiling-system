@@ -6,8 +6,10 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';                          
 import User, { IUser } from '../models/User';
 import jwt from 'jsonwebtoken';
-import * as brevo from '@getbrevo/brevo';
 import { Readable } from 'stream';
+
+// Import Brevo SDK correctly
+const brevo = require('@getbrevo/brevo');
 
 // Use require for cloudinary
 const cloudinary = require('cloudinary').v2;
