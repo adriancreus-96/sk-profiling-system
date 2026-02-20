@@ -1,2 +1,4 @@
 .env
-seedAdmin.ts
+seedAdmin.tsn
+node_modules/
+dist/
