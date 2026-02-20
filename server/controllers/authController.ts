@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 import crypto from 'crypto';                          
 import User, { IUser } from '../models/User';
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
+import * as brevo from '@getbrevo/brevo';
 import { Readable } from 'stream';
 
 // Use require for cloudinary
@@ -26,15 +26,12 @@ console.log('🔧 Cloudinary config in controller:', {
   api_secret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Missing'
 });
 
-const getTransporter = () => nodemailer.createTransport({
-  host:   process.env.EMAIL_HOST,
-  port:   Number(process.env.EMAIL_PORT),
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+// Configure Brevo API
+const apiInstance = new brevo.TransactionalEmailsApi();
+apiInstance.setApiKey(
+  brevo.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY || ''
+);
 
 // Store verification codes temporarily (in production, use Redis or database)
 const verificationCodes = new Map<string, { code: string; expiresAt: number }>();
@@ -118,35 +115,39 @@ export const sendVerificationCode = async (req: Request, res: Response) => {
 
     console.log(`📧 Sending verification code to ${email}: ${code}`);
 
-    // Send email
-    await getTransporter().sendMail({
-      from: `"SK Youth Registration" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: 'Email Verification Code - SK Youth Registration',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; background-color: #f9fafb;">
-          <div style="background-color: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-            <h2 style="color: #2563eb; margin-bottom: 16px; font-size: 24px;">Email Verification</h2>
-            <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">
-              Thank you for registering with SK Youth Registration System! Please use the following verification code to complete your registration:
-            </p>
-            <div style="background-color: #eff6ff; padding: 24px; text-align: center; margin: 24px 0; border-radius: 8px; border: 2px solid #2563eb;">
-              <h1 style="color: #1e40af; letter-spacing: 8px; margin: 0; font-size: 36px; font-weight: bold;">${code}</h1>
-            </div>
-            <p style="color: #6b7280; font-size: 14px; line-height: 1.6;">
-              <strong>Important:</strong> This code will expire in 10 minutes.
-            </p>
-            <p style="color: #6b7280; font-size: 14px; line-height: 1.6;">
-              If you didn't request this code, please ignore this email.
-            </p>
-            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
-            <p style="color: #9ca3af; font-size: 12px; text-align: center;">
-              SK Youth Registration System © ${new Date().getFullYear()}
-            </p>
+    // Send email using Brevo API
+    const sendSmtpEmail = new brevo.SendSmtpEmail();
+    sendSmtpEmail.subject = 'Email Verification Code - SK Youth Registration';
+    sendSmtpEmail.sender = { 
+      email: process.env.EMAIL_USER || 'noreply@skprofiling.com', 
+      name: 'SK Youth Registration' 
+    };
+    sendSmtpEmail.to = [{ email }];
+    sendSmtpEmail.htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; background-color: #f9fafb;">
+        <div style="background-color: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <h2 style="color: #2563eb; margin-bottom: 16px; font-size: 24px;">Email Verification</h2>
+          <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">
+            Thank you for registering with SK Youth Registration System! Please use the following verification code to complete your registration:
+          </p>
+          <div style="background-color: #eff6ff; padding: 24px; text-align: center; margin: 24px 0; border-radius: 8px; border: 2px solid #2563eb;">
+            <h1 style="color: #1e40af; letter-spacing: 8px; margin: 0; font-size: 36px; font-weight: bold;">${code}</h1>
           </div>
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.6;">
+            <strong>Important:</strong> This code will expire in 10 minutes.
+          </p>
+          <p style="color: #6b7280; font-size: 14px; line-height: 1.6;">
+            If you didn't request this code, please ignore this email.
+          </p>
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
+          <p style="color: #9ca3af; font-size: 12px; text-align: center;">
+            SK Youth Registration System © ${new Date().getFullYear()}
+          </p>
         </div>
-      `,
-    });
+      </div>
+    `;
+
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
 
     console.log(`✅ Verification code sent to ${email}`);
 
@@ -387,30 +388,35 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
     const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${rawToken}&email=${user.email}`;
 
-    await getTransporter().sendMail({
-      from:    `"SK System" <${process.env.EMAIL_USER}>`,
-      to:      user.email,
-      subject: 'SK System – Password Reset Request',
-      html: `
-        <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
-          <h2 style="color: #1e40af;">Password Reset Request</h2>
-          <p style="color: #4b5563;">
-            You requested a password reset for your SK System account.
-            Click the button below to choose a new password.
-          </p>
-          <a href="${resetUrl}"
-             style="display: inline-block; margin: 24px 0; padding: 12px 28px;
-                    background-color: #2563eb; color: #fff; border-radius: 6px;
-                    text-decoration: none; font-weight: 600;">
-            Reset My Password
-          </a>
-          <p style="color: #6b7280; font-size: 13px;">
-            This link expires in <strong>1 hour</strong>.<br>
-            If you did not request a password reset, you can safely ignore this email.
-          </p>
-        </div>
-      `,
-    });
+    // Send password reset email using Brevo API
+    const sendSmtpEmail = new brevo.SendSmtpEmail();
+    sendSmtpEmail.subject = 'SK System – Password Reset Request';
+    sendSmtpEmail.sender = { 
+      email: process.env.EMAIL_USER || 'noreply@skprofiling.com', 
+      name: 'SK System' 
+    };
+    sendSmtpEmail.to = [{ email: user.email }];
+    sendSmtpEmail.htmlContent = `
+      <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
+        <h2 style="color: #1e40af;">Password Reset Request</h2>
+        <p style="color: #4b5563;">
+          You requested a password reset for your SK System account.
+          Click the button below to choose a new password.
+        </p>
+        <a href="${resetUrl}"
+           style="display: inline-block; margin: 24px 0; padding: 12px 28px;
+                  background-color: #2563eb; color: #fff; border-radius: 6px;
+                  text-decoration: none; font-weight: 600;">
+          Reset My Password
+        </a>
+        <p style="color: #6b7280; font-size: 13px;">
+          This link expires in <strong>1 hour</strong>.<br>
+          If you did not request a password reset, you can safely ignore this email.
+        </p>
+      </div>
+    `;
+
+    await apiInstance.sendTransacEmail(sendSmtpEmail);
 
     res.status(200).json({
       message: 'If an account with that email exists, a reset link has been sent.',
