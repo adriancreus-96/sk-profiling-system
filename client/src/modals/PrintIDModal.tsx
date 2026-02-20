@@ -14,27 +14,27 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({ user, onClose, onPrintCom
   const [isPrinting, setIsPrinting] = useState(false);
 
   const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-    documentTitle: `SK-ID-${user.skIdNumber || user.lastName}`,
-    onAfterPrint: async () => {
-      console.log('Print completed');
-      setIsPrinting(true);
-      
-      // Mark as printed in the backend
-      if (onPrintComplete) {
-        try {
-          await onPrintComplete(user._id);
-          alert('ID card printed successfully! This user cannot print again.');
-          onClose();
-        } catch (error) {
-          console.error('Error marking ID as printed:', error);
-          alert('ID printed, but failed to update print status. Please contact administrator.');
-        }
+  contentRef: componentRef,
+  documentTitle: `SK-ID-${user.skIdNumber || user.lastName}`,
+  onAfterPrint: async () => {
+    console.log('Print completed');
+    setIsPrinting(true);
+    
+    // Mark as printed in the backend
+    if (onPrintComplete) {
+      try {
+        await onPrintComplete(user._id);
+        alert('ID card printed successfully! This user cannot print again.');
+        onClose();
+      } catch (error) {
+        console.error('Error marking ID as printed:', error);
+        alert('ID printed, but failed to update print status. Please contact administrator.');
       }
-      
-      setIsPrinting(false);
     }
-  });
+    
+    setIsPrinting(false);
+  }
+});
 
   // Format address for ID card
   const formatAddress = () => {

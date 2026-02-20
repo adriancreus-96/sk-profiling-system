@@ -144,7 +144,7 @@ const AdminProfiles = () => {
     }
   };
 
-  const handleEdit = (userId: string) => {
+  const handleEdit = (_userId: string) => {
     setIsEditMode(true);
   };
 
@@ -153,7 +153,7 @@ const AdminProfiles = () => {
   };
 
   // ✅ FIXED: accepts newProfilePicture, sends FormData when picture exists
-  const handleSaveEdit = async (updatedUser: UserData, originalUser: UserData, newProfilePicture?: File) => {
+  const handleSaveEdit = async (updatedUser: UserData, _originalUser: UserData, newProfilePicture?: File) => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
       alert('Not authenticated');
