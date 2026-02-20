@@ -14,27 +14,27 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({ user, onClose, onPrintCom
   const [isPrinting, setIsPrinting] = useState(false);
 
   const handlePrint = useReactToPrint({
-  contentRef: componentRef,
-  documentTitle: `SK-ID-${user.skIdNumber || user.lastName}`,
-  onAfterPrint: async () => {
-    console.log('Print completed');
-    setIsPrinting(true);
-    
-    // Mark as printed in the backend
-    if (onPrintComplete) {
-      try {
-        await onPrintComplete(user._id);
-        alert('ID card printed successfully! This user cannot print again.');
-        onClose();
-      } catch (error) {
-        console.error('Error marking ID as printed:', error);
-        alert('ID printed, but failed to update print status. Please contact administrator.');
+    contentRef: componentRef,
+    documentTitle: `SK-ID-${user.skIdNumber || user.lastName}`,
+    onAfterPrint: async () => {
+      console.log('Print completed');
+      setIsPrinting(true);
+      
+      // Mark as printed in the backend
+      if (onPrintComplete) {
+        try {
+          await onPrintComplete(user._id);
+          alert('ID card printed successfully! This user cannot print again.');
+          onClose();
+        } catch (error) {
+          console.error('Error marking ID as printed:', error);
+          alert('ID printed, but failed to update print status. Please contact administrator.');
+        }
       }
+      
+      setIsPrinting(false);
     }
-    
-    setIsPrinting(false);
-  }
-});
+  });
 
   // Format address for ID card
   const formatAddress = () => {
@@ -90,6 +90,9 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({ user, onClose, onPrintCom
         {/* Preview */}
         <div className="mb-6 bg-gray-100 p-4 rounded-lg">
           <p className="text-sm text-gray-600 mb-4 text-center">Preview (Actual size: 85.6mm × 53.98mm)</p>
+          <p className="text-xs text-blue-600 mb-4 text-center font-semibold">
+            📄 This will print on 2 pages for double-sided printing
+          </p>
           
           <div className="max-w-md mx-auto space-y-4">
             {/* Front Preview */}
@@ -176,6 +179,17 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({ user, onClose, onPrintCom
           </div>
         </div>
 
+        {/* Printing Instructions */}
+        <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+          <h3 className="text-sm font-semibold text-blue-900 mb-2">📋 Printing Instructions:</h3>
+          <ol className="text-xs text-blue-800 space-y-1 list-decimal list-inside">
+            <li>Print pages 1-2 (front and back will be on separate pages)</li>
+            <li>Place page 1 back in the printer for double-sided printing</li>
+            <li>Print page 2 on the back of page 1</li>
+            <li>Cut along the card borders</li>
+          </ol>
+        </div>
+
         {/* Action Buttons */}
         <div className="flex gap-3 justify-end">
           <button
@@ -253,177 +267,198 @@ const PrintableIDCard: React.FC<PrintableIDCardProps> = ({ user }) => {
   };
 
   return (
-    <div style={{ 
-      padding: '20mm',
-      fontFamily: 'Arial, sans-serif'
-    }}>
-      {/* Front Card */}
-      <div style={{
-        width: '85.6mm',
-        height: '53.98mm',
-        backgroundColor: 'white',
-        borderRadius: '8px',
-        overflow: 'hidden',
-        border: '1px solid #ccc',
-        marginBottom: '10mm',
-        display: 'flex',
-        pageBreakAfter: 'avoid'
-      }}>
-        {/* Left side - Photo */}
-        <div style={{
-          width: '35mm',
-          backgroundColor: 'white',
-          padding: '3mm',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between'
-        }}>
-          <div style={{
-            backgroundColor: '#e5e7eb',
-            height: '45mm',
-            overflow: 'hidden',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <img 
-              src={getProfilePicture()}
-              alt="Profile"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-              }}
-            />
-          </div>
-          <div style={{ textAlign: 'center', marginTop: '1mm' }}>
-            <p style={{ fontSize: '8pt', fontWeight: 'bold', margin: 0 }}>
-              {user.skIdNumber || '2025-XXXX'}
-            </p>
-          </div>
-        </div>
-
-        {/* Right side - Info */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          {/* Header */}
-          <div style={{
-            background: 'linear-gradient(to right, #1d4ed8, #1e40af)',
-            color: 'white',
-            padding: '2mm 3mm'
-          }}>
-            <h3 style={{ 
-              fontSize: '9pt', 
-              fontWeight: 'bold', 
-              margin: 0,
-              lineHeight: 1.2
-            }}>
-              SANGGUNIANG KABATAAN
-            </h3>
-            <p style={{ 
-              fontSize: '6pt', 
-              margin: 0,
-              opacity: 0.9
-            }}>
-              Official Identification Card
-            </p>
-          </div>
-
-          {/* Details */}
-          <div style={{
-            flex: 1,
-            padding: '3mm',
-            backgroundColor: '#fffbeb'
-          }}>
-            <div style={{ marginBottom: '1.5mm' }}>
-              <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
-                SURNAME
-              </p>
-              <p style={{ fontSize: '8pt', fontWeight: 'bold', color: '#111827', margin: 0, lineHeight: 1.2 }}>
-                {user.lastName.toUpperCase()}
-              </p>
-            </div>
-            
-            <div style={{ marginBottom: '1.5mm' }}>
-              <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
-                GIVEN NAME
-              </p>
-              <p style={{ fontSize: '8pt', fontWeight: 'bold', color: '#111827', margin: 0, lineHeight: 1.2 }}>
-                {user.firstName.toUpperCase()}
-              </p>
-            </div>
-            
-            <div style={{ marginBottom: '1.5mm' }}>
-              <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
-                MIDDLE NAME
-              </p>
-              <p style={{ fontSize: '8pt', fontWeight: 'bold', color: '#111827', margin: 0, lineHeight: 1.2 }}>
-                {user.middleName?.toUpperCase() || 'N/A'}
-              </p>
-            </div>
-            
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: '1fr 1fr', 
-              gap: '2mm',
-              marginBottom: '1.5mm'
-            }}>
-              <div>
-                <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
-                  BIRTH DATE
-                </p>
-                <p style={{ fontSize: '7pt', fontWeight: 'bold', color: '#111827', margin: 0 }}>
-                  {formatBirthDate()}
-                </p>
-              </div>
-              <div>
-                <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
-                  ISSUANCE DATE
-                </p>
-                <p style={{ fontSize: '7pt', fontWeight: 'bold', color: '#111827', margin: 0 }}>
-                  {formatIssuanceDate()}
-                </p>
-              </div>
-            </div>
-            
-            <div>
-              <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
-                ADDRESS
-              </p>
-              <p style={{ fontSize: '7pt', fontWeight: 'bold', color: '#111827', margin: 0, lineHeight: 1.2 }}>
-                {formatAddress()}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Back Card */}
-      <div style={{
-        width: '85.6mm',
-        height: '53.98mm',
-        background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
-        borderRadius: '8px',
-        overflow: 'hidden',
-        border: '1px solid #ccc',
+    <>
+      {/* PAGE 1: FRONT OF CARD */}
+      <div style={{ 
+        width: '210mm',
+        height: '297mm',
+        padding: '0',
+        margin: '0',
+        fontFamily: 'Arial, sans-serif',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        pageBreakBefore: 'avoid'
+        pageBreakAfter: 'always',
+        boxSizing: 'border-box'
       }}>
         <div style={{
+          width: '85.6mm',
+          height: '53.98mm',
           backgroundColor: 'white',
-          padding: '6mm',
-          borderRadius: '6px',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+          borderRadius: '8px',
+          overflow: 'hidden',
+          border: '1px solid #ccc',
+          display: 'flex'
         }}>
-          <QRCodeSVG 
-            value={user.qrCode || user.skIdNumber || user._id}
-            size={120}
-            level="H"
-          />
+          {/* Left side - Photo */}
+          <div style={{
+            width: '35mm',
+            backgroundColor: 'white',
+            padding: '3mm',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{
+              backgroundColor: '#e5e7eb',
+              height: '45mm',
+              overflow: 'hidden',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <img 
+                src={getProfilePicture()}
+                alt="Profile"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover'
+                }}
+              />
+            </div>
+            <div style={{ textAlign: 'center', marginTop: '1mm' }}>
+              <p style={{ fontSize: '8pt', fontWeight: 'bold', margin: 0 }}>
+                {user.skIdNumber || '2025-XXXX'}
+              </p>
+            </div>
+          </div>
+
+          {/* Right side - Info */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+            {/* Header */}
+            <div style={{
+              background: 'linear-gradient(to right, #1d4ed8, #1e40af)',
+              color: 'white',
+              padding: '2mm 3mm'
+            }}>
+              <h3 style={{ 
+                fontSize: '9pt', 
+                fontWeight: 'bold', 
+                margin: 0,
+                lineHeight: 1.2
+              }}>
+                SANGGUNIANG KABATAAN
+              </h3>
+              <p style={{ 
+                fontSize: '6pt', 
+                margin: 0,
+                opacity: 0.9
+              }}>
+                Official Identification Card
+              </p>
+            </div>
+
+            {/* Details */}
+            <div style={{
+              flex: 1,
+              padding: '3mm',
+              backgroundColor: '#fffbeb'
+            }}>
+              <div style={{ marginBottom: '1.5mm' }}>
+                <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
+                  SURNAME
+                </p>
+                <p style={{ fontSize: '8pt', fontWeight: 'bold', color: '#111827', margin: 0, lineHeight: 1.2 }}>
+                  {user.lastName.toUpperCase()}
+                </p>
+              </div>
+              
+              <div style={{ marginBottom: '1.5mm' }}>
+                <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
+                  GIVEN NAME
+                </p>
+                <p style={{ fontSize: '8pt', fontWeight: 'bold', color: '#111827', margin: 0, lineHeight: 1.2 }}>
+                  {user.firstName.toUpperCase()}
+                </p>
+              </div>
+              
+              <div style={{ marginBottom: '1.5mm' }}>
+                <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
+                  MIDDLE NAME
+                </p>
+                <p style={{ fontSize: '8pt', fontWeight: 'bold', color: '#111827', margin: 0, lineHeight: 1.2 }}>
+                  {user.middleName?.toUpperCase() || 'N/A'}
+                </p>
+              </div>
+              
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: '1fr 1fr', 
+                gap: '2mm',
+                marginBottom: '1.5mm'
+              }}>
+                <div>
+                  <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
+                    BIRTH DATE
+                  </p>
+                  <p style={{ fontSize: '7pt', fontWeight: 'bold', color: '#111827', margin: 0 }}>
+                    {formatBirthDate()}
+                  </p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
+                    ISSUANCE DATE
+                  </p>
+                  <p style={{ fontSize: '7pt', fontWeight: 'bold', color: '#111827', margin: 0 }}>
+                    {formatIssuanceDate()}
+                  </p>
+                </div>
+              </div>
+              
+              <div>
+                <p style={{ fontSize: '6pt', color: '#4b5563', margin: 0, fontWeight: 600 }}>
+                  ADDRESS
+                </p>
+                <p style={{ fontSize: '7pt', fontWeight: 'bold', color: '#111827', margin: 0, lineHeight: 1.2 }}>
+                  {formatAddress()}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* PAGE 2: BACK OF CARD (FLIPPED HORIZONTALLY FOR DOUBLE-SIDED PRINTING) */}
+      <div style={{ 
+        width: '210mm',
+        height: '297mm',
+        padding: '0',
+        margin: '0',
+        fontFamily: 'Arial, sans-serif',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxSizing: 'border-box'
+      }}>
+        <div style={{
+          width: '85.6mm',
+          height: '53.98mm',
+          background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+          borderRadius: '8px',
+          overflow: 'hidden',
+          border: '1px solid #ccc',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transform: 'scaleX(-1)' // Flip horizontally for back-to-back alignment
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '6mm',
+            borderRadius: '6px',
+            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+            transform: 'scaleX(-1)' // Flip content back to normal
+          }}>
+            <QRCodeSVG 
+              value={user.qrCode || user.skIdNumber || user._id}
+              size={120}
+              level="H"
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
