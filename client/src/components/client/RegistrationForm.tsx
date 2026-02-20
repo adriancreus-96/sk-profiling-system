@@ -112,7 +112,7 @@ const RegistrationForm = () => {
     setEmailVerification(prev => ({ ...prev, isSending: true }));
 
     try {
-      const response = await fetch('${VITE_API_URL}/api/auth/send-verification-code', {
+      const response = await fetch(`${API_URL}/api/auth/send-verification-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: formData.email }),
