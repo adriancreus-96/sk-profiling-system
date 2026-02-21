@@ -12,8 +12,15 @@ import {
   createProfileAndApprove,
   resetPrintStatus, 
   markIdAsPrinted,
+  getAdminProfile
 } from '../controllers/adminController';
+import { setup2FA, enable2FA, disable2FA } from '../controllers/twoFactorController';
 import { verifyAdminToken } from '../middleware/authMiddleware';
+import { 
+  adminLoginLimiter, 
+  twoFactorSetupLimiter, 
+  adminApiLimiter 
+} from '../middleware/rateLimiters';
 
 const router = express.Router();
 
@@ -31,10 +38,27 @@ const upload = multer({
   }
 });
 
-// ── PUBLIC ROUTE (no token needed) ──
-router.post('/login', loginAdmin);
+// Apply general rate limiter to all admin routes
+router.use(adminApiLimiter);
 
-// ── PROTECTED ROUTES (require valid admin token) ──
+// ===== AUTHENTICATION ROUTES =====
+// Login (with rate limiting)
+router.post('/login', adminLoginLimiter, loginAdmin);
+
+// Get admin profile
+router.get('/profile', verifyAdminToken, getAdminProfile);
+
+// ===== 2FA ROUTES =====
+// Setup 2FA (generate QR code)
+router.post('/2fa/setup', twoFactorSetupLimiter, setup2FA);
+
+// Enable 2FA (verify and activate)
+router.post('/2fa/enable', twoFactorSetupLimiter, enable2FA);
+
+// Disable 2FA
+router.post('/2fa/disable', verifyAdminToken, disable2FA);
+
+// ===== USER MANAGEMENT ROUTES (PROTECTED) =====
 router.post('/approve-and-create-profile', verifyAdminToken, upload.single('profilePicture'), createProfileAndApprove);
 router.get('/pending', verifyAdminToken, getPendingUsers);
 router.get('/users', verifyAdminToken, getAllUsers);
@@ -44,10 +68,8 @@ router.put('/reject/:id', verifyAdminToken, rejectUser);
 router.put('/restore/:id', verifyAdminToken, restoreUser);
 router.delete('/permanent-delete/:id', verifyAdminToken, permanentDeleteUser);
 
-// Mark ID as printed (called after user prints the ID)
+// ID Printing routes
 router.post('/users/:userId/mark-printed', verifyAdminToken, markIdAsPrinted);
-
-// Reset print status (allows re-printing - admin only)
 router.post('/users/:userId/reset-print', verifyAdminToken, resetPrintStatus);
 
 export default router;

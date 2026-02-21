@@ -1,15 +1,17 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 // 1. The Interface
-// This tells TypeScript what an Admin object looks like in your code.
 export interface IAdmin extends Document {
   username: string;
   passwordHash: string;
   position: 'SK Chairperson' | 'SK Kagawad' | 'Secretary' | 'Treasurer';
+  twoFactorSecret?: string;      // 2FA secret key
+  twoFactorEnabled: boolean;     // Whether 2FA is enabled
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 // 2. The Schema
-// This tells MongoDB how to store the data.
 const AdminSchema: Schema = new Schema({
   username: { 
     type: String, 
@@ -24,6 +26,14 @@ const AdminSchema: Schema = new Schema({
     type: String, 
     enum: ['SK Chairperson', 'SK Kagawad', 'Secretary', 'Treasurer'], 
     required: true 
+  },
+  twoFactorSecret: {
+    type: String,
+    required: false
+  },
+  twoFactorEnabled: {
+    type: Boolean,
+    default: false
   }
 }, { timestamps: true });
 

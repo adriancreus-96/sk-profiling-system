@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt';
 import Admin from '../models/Admin';
 import jwt from 'jsonwebtoken';
 import { Readable } from 'stream';
+import { verify2FAToken } from './twoFactorController';
 
 const cloudinary = require('cloudinary').v2;
 
@@ -38,6 +39,108 @@ const uploadToCloudinary = (buffer: Buffer): Promise<string> => {
     Readable.from(buffer).pipe(uploadStream);
   });
 };
+
+// ===== ADMIN AUTHENTICATION =====
+
+// Admin Login with 2FA support
+export const loginAdmin = async (req: Request, res: Response) => {
+  try {
+    const { username, password, twoFactorToken } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password are required' });
+    }
+
+    // 1. Find admin
+    const admin = await Admin.findOne({ username });
+    if (!admin) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // 2. Verify password
+    const isPasswordValid = await bcrypt.compare(password, admin.passwordHash);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // 3. Check if 2FA is enabled
+    if (admin.twoFactorEnabled) {
+      // If 2FA is enabled but no token provided
+      if (!twoFactorToken) {
+        return res.status(200).json({
+          message: 'Password correct. 2FA required.',
+          requires2FA: true,
+          username: admin.username
+        });
+      }
+
+      // If token is provided, verify it
+      const is2FAValid = verify2FAToken(admin.twoFactorSecret!, twoFactorToken);
+      if (!is2FAValid) {
+        return res.status(401).json({ message: 'Invalid 2FA code' });
+      }
+    }
+
+    // 4. Generate JWT token
+    const token = jwt.sign(
+      { 
+        id: admin._id, 
+        username: admin.username,
+        role: 'admin',
+        position: admin.position 
+      },
+      process.env.JWT_SECRET || 'fallback_secret_key',
+      { expiresIn: '8h' }
+    );
+
+    // 5. Return success
+    res.json({
+      message: 'Login successful',
+      token,
+      role: 'admin',
+      admin: {
+        id: admin._id,
+        username: admin.username,
+        position: admin.position,
+        twoFactorEnabled: admin.twoFactorEnabled
+      }
+    });
+
+  } catch (error) {
+    console.error('Admin login error:', error);
+    res.status(500).json({ message: 'Server error during login' });
+  }
+};
+
+// Get admin profile (to check 2FA status)
+export const getAdminProfile = async (req: Request, res: Response) => {
+  try {
+    const adminId = (req as any).admin?.id;
+
+    if (!adminId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const admin = await Admin.findById(adminId).select('-passwordHash -twoFactorSecret');
+
+    if (!admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+
+    res.json({
+      id: admin._id,
+      username: admin.username,
+      position: admin.position,
+      twoFactorEnabled: admin.twoFactorEnabled
+    });
+
+  } catch (error) {
+    console.error('Get admin profile error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// ===== USER MANAGEMENT =====
 
 // 1. GET ALL PENDING USERS
 export const getPendingUsers = async (req: Request, res: Response) => {
@@ -72,32 +175,6 @@ export const approveUser = async (req: Request, res: Response) => {
     res.json({ message: 'User Approved!', skIdNumber: generatedId, user });
   } catch (error) {
     res.status(500).json({ message: 'Server Error approving user' });
-  }
-};
-
-export const loginAdmin = async (req: Request, res: Response) => {
-  try {
-    const { username, password } = req.body;
-
-    const admin = await Admin.findOne({ username });
-    if (!admin) {
-      return res.status(400).json({ message: 'Admin not found' });
-    }
-
-    const isMatch = await bcrypt.compare(password, admin.passwordHash);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid Admin credentials' });
-    }
-
-    const token = jwt.sign(
-      { id: admin._id, role: 'admin' },
-      process.env.JWT_SECRET || 'fallback_secret_key',
-      { expiresIn: '1d' }
-    );
-
-    res.json({ token, role: 'admin' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
   }
 };
 
