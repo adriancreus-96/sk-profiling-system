@@ -11,6 +11,7 @@ import CreateProfile from './components/admin/CreateProfile';
 import PostEvent from './components/admin/PostEvent';
 import ViewEvents from './components/admin/ViewEvents';
 import HomePage from './components/client/HomePage';
+import Setup2FA from './components/admin/Setup2FA';
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -188,6 +189,8 @@ function App() {
 
       {/* ── Admin routes ── */}
       <Route path="/admin/login" element={<AdminLogin />} />
+
+      <Route path="/admin/setup-2fa" element={<Setup2FA />} />
 
       {/* Admin Landing Page (Main Dashboard) */}
       <Route

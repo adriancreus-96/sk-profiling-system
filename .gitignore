@@ -1,4 +1,3 @@
 .env
-seedAdmin.tsn
 node_modules/
 dist/
