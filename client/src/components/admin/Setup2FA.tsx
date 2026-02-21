@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Shield, Smartphone, Key, CheckCircle, X } from 'lucide-react';
+import { Smartphone, Key, CheckCircle, X } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
