@@ -154,7 +154,6 @@ const AdminProfiles = () => {
     setIsEditMode(false);
   };
 
-  // ✅ FIXED: accepts newProfilePicture, sends FormData when picture exists
   const handleSaveEdit = async (updatedUser: UserData, _originalUser: UserData, newProfilePicture?: File) => {
     const token = localStorage.getItem('adminToken');
     if (!token) {
@@ -166,10 +165,8 @@ const AdminProfiles = () => {
       let response;
 
       if (newProfilePicture) {
-        // Send as FormData so the picture file is included
         const formData = new FormData();
 
-        // Skip fields that can't be serialized or shouldn't be updated via this endpoint
         const skipFields = ['_id', 'profilePicture', 'eventRegistrations', 'eventParticipations', 'qrCode', 'points', 'skIdNumber', 'status', 'passwordHash'];
         Object.entries(updatedUser).forEach(([key, value]) => {
           if (skipFields.includes(key)) return;
@@ -179,7 +176,6 @@ const AdminProfiles = () => {
           formData.append(key, String(value));
         });
 
-        // Append the actual file
         formData.append('profilePicture', newProfilePicture);
 
         response = await axios.put(
@@ -187,11 +183,9 @@ const AdminProfiles = () => {
           formData,
           {
             headers: { Authorization: `Bearer ${token}` }
-            // DO NOT set Content-Type — axios sets it automatically with boundary
           }
         );
       } else {
-        // No new picture — send as JSON
         response = await axios.put(
           `${API_URL}/api/admin/update-user/${updatedUser._id}`,
           updatedUser,
@@ -204,15 +198,12 @@ const AdminProfiles = () => {
         );
       }
 
-      // Use server response — has the real new Cloudinary URL
       const savedUser = response.data;
 
-      // Update users list with server data
       setAllUsers(prev => prev.map(u =>
         u._id === savedUser._id ? savedUser : u
       ));
 
-      // Update modal with server data so the new picture URL is shown
       setSelectedUser(savedUser);
 
       setIsEditMode(false);
@@ -401,9 +392,20 @@ const AdminProfiles = () => {
         </button>
       </div>
 
-      <h1 className="text-4xl font-extrabold text-black mb-8 text-center tracking-tight">
+      <h1 className="text-4xl font-extrabold text-black mb-4 text-center tracking-tight">
         Youth Profiles {showArchive && '- Archive'}
       </h1>
+
+      {/* Profile Count Badge */}
+      <div className="flex justify-center mb-6">
+        <span className="px-4 py-1.5 bg-teal-100 text-teal-800 text-sm font-semibold rounded-full">
+          {filteredUsers.length} {filteredUsers.length === 1 ? 'Profile' : 'Profiles'} Found
+          {selectedPurok !== 'All' && ` · ${selectedPurok}`}
+          {!showArchive && statusFilter !== 'All' && ` · ${statusFilter}`}
+          {showArchive && archiveStatusFilter !== 'All' && ` · ${archiveStatusFilter}`}
+          {searchQuery && ` · "${searchQuery}"`}
+        </span>
+      </div>
 
       <div className="flex justify-end mb-6">
         <button

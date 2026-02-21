@@ -1,8 +1,59 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, UserPlus, Calendar, FileText, LogOut } from 'lucide-react';
+import axios from 'axios';
 
 const AdminLanding = () => {
   const navigate = useNavigate();
+
+  const [stats, setStats] = useState({
+    total: 0,
+    pending: 0,
+    upcomingEvents: 0,
+  });
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const token = localStorage.getItem('adminToken');
+      if (!token) return;
+
+      try {
+        const [usersRes, eventsRes] = await Promise.all([
+          axios.get(`${API_URL}/api/admin/users`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          axios.get(`${API_URL}/api/admin/events`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }).catch(() => ({ data: [] })) // graceful fallback if events endpoint differs
+        ]);
+
+        const activeUsers = usersRes.data.filter(
+          (u: any) => u.status !== 'Rejected' && u.status !== 'Archived'
+        );
+        const pendingCount = activeUsers.filter((u: any) => u.status === 'Pending').length;
+
+        const now = new Date();
+        const upcomingCount = eventsRes.data.filter(
+          (e: any) => new Date(e.date) >= now
+        ).length;
+
+        setStats({
+          total: activeUsers.length,
+          pending: pendingCount,
+          upcomingEvents: upcomingCount,
+        });
+      } catch (error) {
+        console.error('Failed to fetch stats:', error);
+      } finally {
+        setStatsLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
@@ -38,6 +89,24 @@ const AdminLanding = () => {
       path: '/admin/events',
       color: 'bg-orange-500 hover:bg-orange-600'
     }
+  ];
+
+  const statCards = [
+    {
+      label: 'Total Active Profiles',
+      value: stats.total,
+      color: 'text-gray-900',
+    },
+    {
+      label: 'Pending Approvals',
+      value: stats.pending,
+      color: 'text-yellow-600',
+    },
+    {
+      label: 'Upcoming Events',
+      value: stats.upcomingEvents,
+      color: 'text-purple-600',
+    },
   ];
 
   return (
@@ -90,20 +159,18 @@ const AdminLanding = () => {
           })}
         </div>
 
-        {/* Statistics Cards (Optional) */}
+        {/* Statistics Cards */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-lg p-6 shadow-md">
-            <div className="text-sm text-gray-600 mb-1">Total Profiles</div>
-            <div className="text-3xl font-bold text-gray-900">---</div>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow-md">
-            <div className="text-sm text-gray-600 mb-1">Pending Approvals</div>
-            <div className="text-3xl font-bold text-yellow-600">---</div>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow-md">
-            <div className="text-sm text-gray-600 mb-1">Upcoming Events</div>
-            <div className="text-3xl font-bold text-purple-600">---</div>
-          </div>
+          {statCards.map((card) => (
+            <div key={card.label} className="bg-white rounded-lg p-6 shadow-md">
+              <div className="text-sm text-gray-600 mb-1">{card.label}</div>
+              {statsLoading ? (
+                <div className="text-3xl font-bold text-gray-300 animate-pulse">...</div>
+              ) : (
+                <div className={`text-3xl font-bold ${card.color}`}>{card.value}</div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
     </div>
