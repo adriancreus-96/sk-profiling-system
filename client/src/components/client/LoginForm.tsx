@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Lock, Mail, LogIn } from 'lucide-react';
+import { Lock, Mail, LogIn, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL
@@ -8,6 +8,7 @@ const API_URL = import.meta.env.VITE_API_URL
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,11 +19,9 @@ const LoginForm = () => {
         password,
       });
 
-      // 1. Persist token & user (same as before)
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
-      // 2. Status-aware feedback  (fixed syntax — was broken template literals)
       const user = response.data.user;
       if (user.status === 'Pending') {
         alert('Login Successful! But your account is still PENDING approval.');
@@ -30,7 +29,6 @@ const LoginForm = () => {
         alert(`Welcome back, ${user.firstName}! Your SK ID is: ${user.skIdNumber}`);
       }
 
-      // 3. Go to the protected home page
       navigate('/home');
     } catch (error: any) {
       alert('Login Failed: ' + (error.response?.data?.message || 'Server Error'));
@@ -81,13 +79,20 @@ const LoginForm = () => {
               <Lock className="h-5 w-5 text-gray-400" />
             </div>
             <input
-              type="password"
-              className="pl-10 block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent p-2.5"
+              type={showPassword ? 'text' : 'password'}
+              className="pl-10 pr-10 block w-full rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent p-2.5"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+            >
+              {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+            </button>
           </div>
         </div>
 

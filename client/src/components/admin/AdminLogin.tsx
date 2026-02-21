@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Shield, Lock } from 'lucide-react';
+import { Shield, Lock, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL;
-console.log('🔍 API_URL:', API_URL); 
+console.log('🔍 API_URL:', API_URL);
 
 const AdminLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [twoFactorToken, setTwoFactorToken] = useState('');
   const [requires2FA, setRequires2FA] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,24 +26,19 @@ const AdminLogin = () => {
         twoFactorToken: twoFactorToken || undefined
       });
 
-      // Check if 2FA is required
       if (response.data.requires2FA) {
         setRequires2FA(true);
         setIsLoading(false);
         return;
       }
 
-      // Login successful - save token
       localStorage.setItem('adminToken', response.data.token);
-      
       console.log("Login Success! Redirecting to admin landing page...");
+      navigate('/admin');
 
-      // Redirect to admin dashboard
-      navigate('/admin'); 
-        
     } catch (error: any) {
       console.error("Login Error:", error);
-      
+
       if (error.response?.status === 429) {
         alert('Too many login attempts. Please try again later.');
       } else if (error.response?.data?.message) {
@@ -50,7 +46,7 @@ const AdminLogin = () => {
       } else {
         alert('Access Denied');
       }
-      
+
       setIsLoading(false);
     }
   };
@@ -72,25 +68,25 @@ const AdminLogin = () => {
             )}
           </div>
         </div>
-        
+
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
           {requires2FA ? 'Two-Factor Authentication' : 'Admin Portal'}
         </h2>
-        
+
         {requires2FA && (
           <p className="text-sm text-center text-gray-600 mb-6">
             Enter the 6-digit code from your authenticator app
           </p>
         )}
-        
+
         <form onSubmit={handleLogin} className="space-y-4">
           {!requires2FA ? (
             <>
-              {/* Username and Password */}
+              {/* Username */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">Username</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={username}
                   onChange={e => setUsername(e.target.value)}
@@ -98,16 +94,28 @@ const AdminLogin = () => {
                   disabled={isLoading}
                 />
               </div>
+
+              {/* Password */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">Password</label>
-                <input 
-                  type="password" 
-                  className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
+                <div className="relative mt-1">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    className="block w-full border border-gray-300 rounded-md p-2 pr-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    disabled={isLoading}
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
               </div>
             </>
           ) : (
@@ -117,8 +125,8 @@ const AdminLogin = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Verification Code
                 </label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   maxLength={6}
                   pattern="[0-9]*"
                   inputMode="numeric"
@@ -146,8 +154,8 @@ const AdminLogin = () => {
             </>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="w-full bg-gray-800 text-white py-2 rounded-md hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             disabled={isLoading || (requires2FA && twoFactorToken.length !== 6)}
           >
