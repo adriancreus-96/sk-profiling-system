@@ -3,16 +3,17 @@ import speakeasy from 'speakeasy';
 import QRCode from 'qrcode';
 import Admin from '../models/Admin';
 
-// Generate 2FA secret and QR code
+// Generate 2FA secret and QR code (requires authentication)
 export const setup2FA = async (req: Request, res: Response) => {
   try {
-    const { username } = req.body;
+    // Get admin ID from authenticated token
+    const adminId = (req as any).admin?.id;
 
-    if (!username) {
-      return res.status(400).json({ message: 'Username is required' });
+    if (!adminId) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const admin = await Admin.findOne({ username });
+    const admin = await Admin.findById(adminId);
     if (!admin) {
       return res.status(404).json({ message: 'Admin not found' });
     }
@@ -43,16 +44,23 @@ export const setup2FA = async (req: Request, res: Response) => {
   }
 };
 
-// Verify and enable 2FA
+// Verify and enable 2FA (requires authentication)
 export const enable2FA = async (req: Request, res: Response) => {
   try {
-    const { username, token } = req.body;
+    const { token } = req.body;
+    
+    // Get admin ID from authenticated token
+    const adminId = (req as any).admin?.id;
 
-    if (!username || !token) {
-      return res.status(400).json({ message: 'Username and token are required' });
+    if (!adminId) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const admin = await Admin.findOne({ username });
+    if (!token) {
+      return res.status(400).json({ message: 'Verification token is required' });
+    }
+
+    const admin = await Admin.findById(adminId);
     if (!admin || !admin.twoFactorSecret) {
       return res.status(400).json({ message: 'No 2FA setup found. Please setup 2FA first.' });
     }
@@ -84,16 +92,23 @@ export const enable2FA = async (req: Request, res: Response) => {
   }
 };
 
-// Disable 2FA
+// Disable 2FA (requires authentication)
 export const disable2FA = async (req: Request, res: Response) => {
   try {
-    const { username, token } = req.body;
+    const { token } = req.body;
+    
+    // Get admin ID from authenticated token
+    const adminId = (req as any).admin?.id;
 
-    if (!username || !token) {
-      return res.status(400).json({ message: 'Username and token are required' });
+    if (!adminId) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const admin = await Admin.findOne({ username });
+    if (!token) {
+      return res.status(400).json({ message: 'Verification token is required' });
+    }
+
+    const admin = await Admin.findById(adminId);
     if (!admin || !admin.twoFactorEnabled) {
       return res.status(400).json({ message: '2FA is not enabled' });
     }

@@ -49,13 +49,13 @@ router.post('/login', adminLoginLimiter, loginAdmin);
 router.get('/profile', verifyAdminToken, getAdminProfile);
 
 // ===== 2FA ROUTES =====
-// Setup 2FA (generate QR code)
-router.post('/2fa/setup', twoFactorSetupLimiter, setup2FA);
+// Setup 2FA (generate QR code) - requires authentication
+router.post('/2fa/setup', verifyAdminToken, setup2FA);
 
-// Enable 2FA (verify and activate)
-router.post('/2fa/enable', twoFactorSetupLimiter, enable2FA);
+// Enable 2FA (verify and activate) - requires authentication
+router.post('/2fa/enable', verifyAdminToken, enable2FA);
 
-// Disable 2FA
+// Disable 2FA - requires authentication
 router.post('/2fa/disable', verifyAdminToken, disable2FA);
 
 // ===== USER MANAGEMENT ROUTES (PROTECTED) =====

@@ -1,32 +1,47 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Shield, Smartphone, Key, CheckCircle } from 'lucide-react';
+import { Shield, Smartphone, Key, CheckCircle, X } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const Setup2FA = () => {
-  const [step, setStep] = useState<'username' | 'qrcode' | 'verify' | 'success'>('username');
-  const [username, setUsername] = useState('');
+interface Setup2FAProps {
+  onClose?: () => void;
+  onSuccess?: () => void;
+}
+
+const Setup2FA: React.FC<Setup2FAProps> = ({ onClose, onSuccess }) => {
+  const [step, setStep] = useState<'qrcode' | 'verify' | 'success'>('qrcode');
   const [qrCode, setQrCode] = useState('');
   const [secret, setSecret] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Step 1: Generate QR Code
-  const handleSetup = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Get admin token from localStorage
+  const token = localStorage.getItem('adminToken');
+
+  // Generate QR Code on mount
+  React.useEffect(() => {
+    handleSetup();
+  }, []);
+
+  const handleSetup = async () => {
     setIsLoading(true);
     setError('');
 
     try {
-      const response = await axios.post(`${API_URL}/api/admin/2fa/setup`, {
-        username
-      });
+      const response = await axios.post(
+        `${API_URL}/api/admin/2fa/setup`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
 
       setQrCode(response.data.qrCode);
       setSecret(response.data.secret);
-      setStep('qrcode');
     } catch (error: any) {
       setError(error.response?.data?.message || 'Failed to setup 2FA');
     } finally {
@@ -34,19 +49,30 @@ const Setup2FA = () => {
     }
   };
 
-  // Step 2: Verify and Enable
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
     try {
-      await axios.post(`${API_URL}/api/admin/2fa/enable`, {
-        username,
-        token: verificationCode
-      });
+      await axios.post(
+        `${API_URL}/api/admin/2fa/enable`,
+        { token: verificationCode },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
 
       setStep('success');
+      
+      // Call success callback after a delay
+      setTimeout(() => {
+        if (onSuccess) onSuccess();
+        if (onClose) onClose();
+      }, 2000);
+      
     } catch (error: any) {
       setError(error.response?.data?.message || 'Invalid verification code');
     } finally {
@@ -54,70 +80,30 @@ const Setup2FA = () => {
     }
   };
 
-  const handleReset = () => {
-    setStep('username');
-    setUsername('');
-    setQrCode('');
-    setSecret('');
-    setVerificationCode('');
-    setError('');
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl p-8 max-w-lg w-full">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-xl shadow-2xl p-8 max-w-lg w-full relative">
         
-        {/* Step 1: Enter Username */}
-        {step === 'username' && (
-          <>
-            <div className="flex justify-center mb-6">
-              <div className="bg-blue-100 p-4 rounded-full">
-                <Shield className="w-12 h-12 text-blue-600" />
-              </div>
-            </div>
-            
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">
-              Setup Two-Factor Authentication
-            </h2>
-            <p className="text-center text-gray-600 mb-8">
-              Add an extra layer of security to your admin account
-            </p>
-
-            <form onSubmit={handleSetup} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Admin Username
-                </label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your admin username"
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                  {error}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? 'Setting up...' : 'Continue'}
-              </button>
-            </form>
-          </>
+        {/* Close button */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
         )}
 
-        {/* Step 2: Scan QR Code */}
-        {step === 'qrcode' && (
+        {/* Loading State */}
+        {isLoading && !qrCode && (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Setting up 2FA...</p>
+          </div>
+        )}
+
+        {/* Step 1: Scan QR Code */}
+        {step === 'qrcode' && qrCode && (
           <>
             <div className="flex justify-center mb-6">
               <div className="bg-green-100 p-4 rounded-full">
@@ -151,6 +137,12 @@ const Setup2FA = () => {
               </div>
             </div>
 
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-4">
+                {error}
+              </div>
+            )}
+
             <button
               onClick={() => setStep('verify')}
               className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
@@ -160,7 +152,7 @@ const Setup2FA = () => {
           </>
         )}
 
-        {/* Step 3: Verify Code */}
+        {/* Step 2: Verify Code */}
         {step === 'verify' && (
           <>
             <div className="flex justify-center mb-6">
@@ -211,6 +203,7 @@ const Setup2FA = () => {
                 type="button"
                 onClick={() => setStep('qrcode')}
                 className="w-full bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
+                disabled={isLoading}
               >
                 Back
               </button>
@@ -218,7 +211,7 @@ const Setup2FA = () => {
           </>
         )}
 
-        {/* Step 4: Success */}
+        {/* Step 3: Success */}
         {step === 'success' && (
           <>
             <div className="flex justify-center mb-6">
@@ -231,23 +224,16 @@ const Setup2FA = () => {
               2FA Enabled Successfully!
             </h2>
             <p className="text-center text-gray-600 mb-8">
-              Your admin account is now protected with two-factor authentication. 
+              Your account is now protected with two-factor authentication. 
               You'll need your authenticator app to log in from now on.
             </p>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <p className="text-sm text-blue-800">
                 <strong>Important:</strong> Keep your authenticator app safe. If you lose access to it, 
-                you won't be able to log in to your admin account.
+                contact your system administrator.
               </p>
             </div>
-
-            <button
-              onClick={handleReset}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
-            >
-              Setup Another Admin
-            </button>
           </>
         )}
 
