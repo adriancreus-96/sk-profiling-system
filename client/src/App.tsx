@@ -190,7 +190,14 @@ function App() {
       {/* ── Admin routes ── */}
       <Route path="/admin/login" element={<AdminLogin />} />
 
-      <Route path="/admin/setup-2fa" element={<Setup2FA />} />
+      <Route 
+        path="/admin/setup-2fa" 
+        element={
+          <AdminProtectedRoute>
+            <Setup2FA />
+          </AdminProtectedRoute>
+        }
+      />
 
       {/* Admin Landing Page (Main Dashboard) */}
       <Route
