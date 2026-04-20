@@ -3,7 +3,7 @@ import { useReactToPrint } from 'react-to-print';
 import { QRCodeSVG } from 'qrcode.react';
 import { type UserData } from './UserViewModal';
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL || "localhost:5173"
 
 interface PrintIDModuleProps {
   user: UserData;

@@ -7,7 +7,7 @@ import {
 import axios from 'axios';
 import AttendeeProfileModal from '../../modals/AttendeeProfileModal';
 import QRScannerModal from '../../modals/QRScannerModal';
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL || "localhost:5173"
 
 interface Event {
   _id: string;

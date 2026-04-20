@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { X, QrCode, CheckCircle, AlertCircle, Camera } from 'lucide-react';
 import jsQR from 'jsqr';
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL || "localhost:5173"
 
 interface Event {
   _id: string;

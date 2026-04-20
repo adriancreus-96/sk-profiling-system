@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, MapPin, Briefcase, Flag, ArrowLeft, UserPlus, Camera, X } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL
+const API_URL = import.meta.env.VITE_API_URL || "localhost:5173"
 
 const CreateProfile = () => {
   const navigate = useNavigate();

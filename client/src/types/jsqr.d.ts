@@ -1,6 +1,3 @@
-// jsqr.d.ts
-// Place this file in: client/src/types/jsqr.d.ts
-
 declare module 'jsqr' {
   export interface QRCode {
     binaryData: number[];

@@ -56,7 +56,7 @@ const AdminProfiles = () => {
   const [statusFilter, setStatusFilter] = useState<'All' | 'Pending' | 'Approved'>('All');
   const [archiveStatusFilter, setArchiveStatusFilter] = useState<'All' | 'Rejected' | 'Archived'>('All');
 
-  const API_URL = import.meta.env.VITE_API_URL
+  const API_URL = import.meta.env.VITE_API_URL || "localhost:5173"
 
   // FETCH DATA
   useEffect(() => {
