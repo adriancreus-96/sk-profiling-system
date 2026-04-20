@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, MapPin, Briefcase, Lock, Flag, Camera, X, Eye, EyeOff, Mail, Shield, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { User, MapPin, Lock, Flag, Camera, X, Eye, EyeOff, Mail, Shield, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL || "localhost:5173";
@@ -549,7 +549,7 @@ const RegistrationForm = () => {
 
 // ── Navigation Buttons ──
 const StepNav = ({
-  step, total, onBack, onNext,
+  step, onBack, onNext,
 }: { step: number; total: number; onBack: () => void; onNext: () => void }) => (
   <div className="px-6 pb-6 flex items-center justify-between">
     {step > 1 ? (

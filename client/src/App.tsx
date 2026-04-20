@@ -1,6 +1,4 @@
-  import React, { useState } from 'react';
-  import { Routes, Route, Navigate, Link } from 'react-router-dom';
-  import { Mail, ArrowLeft, CheckCircle } from 'lucide-react';
+  import { Routes, Route, Navigate} from 'react-router-dom';
   import LoginForm from './components/client/LoginForm';
   import RegistrationForm from './components/client/RegistrationForm';
   import ResetPasswordForm from './components/client/ResetPasswordForm';
@@ -13,8 +11,6 @@
   import HomePage from './components/client/HomePage';
   import Setup2FA from './components/admin/Setup2FA';
   import ForgotPasswordForm from './components/client/ForgotPasswordForm';
-
-  const API_URL = import.meta.env.VITE_API_URL  || "localhost:5173"
 
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const token = localStorage.getItem('token');
