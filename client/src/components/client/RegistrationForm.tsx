@@ -734,7 +734,7 @@ const RegistrationForm = () => {
 
 // ── Navigation Buttons — styled with LoginForm's button aesthetic ──
 const StepNav = ({
-  step, total, onBack, onNext,
+  step, onBack, onNext,
 }: { step: number; total: number; onBack: () => void; onNext: () => void }) => (
   <div className="flex items-center justify-between mt-6">
     {step > 1 ? (
