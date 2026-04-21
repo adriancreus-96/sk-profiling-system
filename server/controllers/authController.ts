@@ -36,7 +36,7 @@ const sendBrevoEmail = async (to: string, subject: string, htmlContent: string) 
     },
     body: JSON.stringify({
       sender: {
-        name: 'SK System',
+        name: 'SIGLA Calumpang Cerca',
         email: 'noreply@sigla-calumpangcerca.com',
       },
       to: [{ email: to }],
@@ -411,7 +411,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
         <h2 style="color: #1e40af;">Password Reset Request</h2>
         <p style="color: #4b5563;">
-          You requested a password reset for your SK System account.
+          You requested a password reset for your SIGLA account.
           Click the button below to choose a new password.
         </p>
         <a href="${resetUrl}"
