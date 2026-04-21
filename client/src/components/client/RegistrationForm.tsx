@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, MapPin, Lock, Flag, Camera, X, Eye, EyeOff, Mail, Shield, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
+import { User, Camera, X, Eye, EyeOff, Mail, Shield, ChevronLeft, ChevronRight, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const API_URL = import.meta.env.VITE_API_URL || "localhost:5173";
