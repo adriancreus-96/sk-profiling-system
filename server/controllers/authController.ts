@@ -138,7 +138,7 @@ export const sendVerificationCode = async (req: Request, res: Response) => {
     // Send email using Brevo API
     await sendBrevoEmail(
       email,
-      'Email Verification Code - SK Youth Registration',
+      'Email Verification Code - SIGLA Registration',
       `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; background-color: #f9fafb;">
         <div style="background-color: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
