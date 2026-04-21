@@ -39,7 +39,7 @@ const LoginForm = () => {
     <div
       className="min-h-screen w-full flex flex-col"
       style={{
-        background: 'linear-gradient(160deg, #4fc3c3 0%, #2a8a8a 40%, #1a5f6e 70%, #0d3d4f 100%)',
+        background: 'linear-gradient(160deg, #6EB8BB 0%, #5CB0B3 37%, #007EA7 100%)',
       }}
     >
       <div className="flex-1 flex flex-col lg:flex-row">
@@ -47,39 +47,76 @@ const LoginForm = () => {
         {/* ── LEFT PANEL: branding, desktop only ── */}
         <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center px-16 py-12">
           <div className="mb-6 text-center">
-            <span
-              className="text-white font-black uppercase block"
-              style={{
-                fontSize: '6rem',
-                fontFamily: "'Arial Black', Impact, sans-serif",
-                textShadow: '6px 6px 0px rgba(0,0,0,0.3)',
-                letterSpacing: '0.1em',
-                lineHeight: 1,
-              }}
-            >
-              SIGLA
+            <span className="block">
+              <svg
+                viewBox="0 0 620 130"
+                xmlns="http://www.w3.org/2000/svg"
+                style={{ overflow: "visible", display: "block", width: "100%" }}
+              >
+                <defs>
+                  <linearGradient id="strokeGrad" x1="45%" y1="100%" x2="55%" y2="0%">
+                    <stop offset="0%" stopColor="#0B5A73" stopOpacity="0.32" />
+                    <stop offset="25%" stopColor="#15AAD9" stopOpacity="0.32" />
+                    <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.32" />
+                  </linearGradient>
+                </defs>
+
+                {/* Gradient stroke layer — painted first, slightly larger, outside effect */}
+                <text
+                  x="50%" y="100"
+                  textAnchor="middle"
+                  fill="none"
+                  stroke="url(#strokeGrad)"
+                  strokeWidth="30"
+                  strokeLinejoin="round"
+                  style={{
+                    fontFamily: "'Fugaz One', Impact, sans-serif",
+                    fontSize: "200px",
+                    fontWeight: 900,
+                    textTransform: "uppercase",
+                    letterSpacing: "-0.01em",
+                    filter: "drop-shadow(0px 6px 0px rgba(0,0,0,0.3))"
+                  }}
+                >
+                  SIGLA
+                </text>
+
+                {/* Fill layer on top — covers the inner half of the stroke, simulating outside position */}
+                <text
+                  x="50%" y="100"
+                  textAnchor="middle"
+                  fill="#00171F"
+                  stroke="#00171F"
+                  strokeWidth="2"
+                  style={{
+                    fontFamily: "'Fugaz One', Impact, sans-serif",
+                    fontSize: "200px",
+                    fontWeight: 900,
+                    textTransform: "uppercase",
+                    letterSpacing: "-0.02em",
+                    //filter: "drop-shadow(6px 6px 0px rgba(0,0,0,0.3))",
+                  }}
+                >
+                  SIGLA
+                </text>
+              </svg>
             </span>
-            <div
-              className="h-0.5 bg-white opacity-50 mt-2 mx-auto"
-              style={{ width: '80%', transform: 'skewX(-15deg)' }}
-            />
+
           </div>
 
           <p
-            className="text-white text-base text-center italic opacity-90 leading-relaxed max-w-xs"
-            style={{ fontFamily: 'Georgia, serif' }}
+            className="text-white text-base text-center italic opacity-90 leading-relaxed max-w-xs font-fugaz"
           >
-            <span className="font-bold not-italic">S</span>angguniang{' '}
-            <span className="font-bold not-italic">K</span>abataan for{' '}
-            <span className="font-bold not-italic">G</span>rowth,{' '}
-            <span className="font-bold not-italic">L</span>eadership, and{' '}
-            <span className="font-bold not-italic">A</span>chievement
+            <span className="font-bold text-[#00171F]">S</span>K{' '}
+            <span className="font-bold text-[#00171F]">I</span>nfosystem for{' '}
+            <span className="font-bold text-[#00171F]">G</span>rowth,{' '}
+            <span className="font-bold text-[#00171F]">L</span>eadership, and{' '}
+            <span className="font-bold text-[#00171F]">A</span>chievement
           </p>
 
           <div className="mt-16 text-center">
             <p
-              className="text-white text-sm italic opacity-70 leading-relaxed"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="text-white text-sm italic opacity-70 leading-relaxed font-fugaz"
             >
               Sangguniang Kabataan
               <br />
@@ -91,33 +128,62 @@ const LoginForm = () => {
         {/* ── RIGHT PANEL: form ── */}
         <div className="flex-1 lg:w-1/2 flex flex-col items-center justify-between py-10 px-4 lg:justify-center lg:py-0">
 
-          {/* Mobile-only logo */}
-          <div className="lg:hidden flex flex-col items-center mb-6 mt-4">
-            <span
-              className="text-white font-black uppercase"
-              style={{
-                fontSize: '3.5rem',
-                fontFamily: "'Arial Black', Impact, sans-serif",
-                textShadow: '4px 4px 0px rgba(0,0,0,0.3)',
-                letterSpacing: '0.12em',
-                lineHeight: 1,
-              }}
-            >
-              SIGLA
+          <div className="lg:hidden flex flex-col items-center mb-6 mt-4 w-full px-6">
+            <span className="block w-full">
+              <svg
+                viewBox="0 0 620 130"
+                xmlns="http://www.w3.org/2000/svg"
+                className="overflow-visible block w-full"
+              >
+                <defs>
+                  <linearGradient id="strokeGradMobile" x1="45%" y1="100%" x2="55%" y2="0%">
+                    <stop offset="0%" stopColor="#0B5A73" stopOpacity="0.32" />
+                    <stop offset="25%" stopColor="#15AAD9" stopOpacity="0.32" />
+                    <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.32" />
+                  </linearGradient>
+                </defs>
+                <text
+                  x="50%" y="100"
+                  textAnchor="middle"
+                  fill="none"
+                  stroke="url(#strokeGradMobile)"
+                  strokeWidth="30"
+                  style={{
+                    fontFamily: "'Fugaz One', Impact, sans-serif",
+                    fontSize: '150px',
+                    fontWeight: 900,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0em',
+                    filter: 'drop-shadow(0px 8px 4px #003459)',
+                  }}
+                >
+                  SIGLA
+                </text>
+                <text
+                  x="50%" y="100"
+                  textAnchor="middle"
+                  fill="#00171F"
+                  stroke="#00171F"
+                  strokeWidth="2"
+                  style={{
+                    fontFamily: "'Fugaz One', Impact, sans-serif",
+                    fontSize: '150px',
+                    fontWeight: 900,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0em',
+                  }}
+                >
+                  SIGLA
+                </text>
+              </svg>
             </span>
-            <div
-              className="h-0.5 bg-white opacity-50 mt-1"
-              style={{ width: '90%', transform: 'skewX(-15deg)' }}
-            />
-            <p
-              className="text-white text-xs mt-2 text-center italic opacity-90"
-              style={{ fontFamily: 'Georgia, serif' }}
-            >
-              <span className="font-bold not-italic">S</span>angguniang{' '}
-              <span className="font-bold not-italic">K</span>abataan for{' '}
-              <span className="font-bold not-italic">G</span>rowth,{' '}
-              <span className="font-bold not-italic">L</span>eadership, and{' '}
-              <span className="font-bold not-italic">A</span>chievement
+
+            <p className="text-white text-xs mt-2 text-center italic opacity-90 font-fugaz [filter:drop-shadow(0px_2px_2px_#003459)]">
+              <span className="font-bold text-[#00171F]">S</span>K{' '}
+              <span className="font-bold text-[#00171F]">I</span>nfosystem for{' '}
+              <span className="font-bold text-[#00171F]">G</span>rowth,{' '}
+              <span className="font-bold text-[#00171F]">L</span>eadership, and{' '}
+              <span className="font-bold text-[#00171F]">A</span>chievement
             </p>
           </div>
 
@@ -125,23 +191,26 @@ const LoginForm = () => {
           <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl px-7 py-8 lg:max-w-md lg:px-10 lg:py-10">
             <div className="text-center mb-6">
               <h2
-                className="text-2xl font-bold text-gray-900 lg:text-3xl"
-                style={{ fontFamily: 'Georgia, serif' }}
+                className="text-2xl font-bold text-gray-900 lg:text-3xl font-fugaz [filter:drop-shadow(0px_2px_50px_#000000)]"
               >
                 Member Login
               </h2>
-              <p className="text-gray-400 text-xs mt-1">Log in to your SIGLA Account</p>
+              <p
+                className="text-gray-400 text-xs mt-1 font-work"
+              >Log in to your SIGLA Account</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  className="block text-sm font-medium text-[#00171F] mb-1 font-work"
+                >
                   Email Address
                 </label>
                 <input
                   type="email"
-                  className="block w-full rounded-lg border border-gray-300 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition"
+                  className="block w-full rounded-lg border border-gray-300 p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -151,15 +220,18 @@ const LoginForm = () => {
               {/* Password */}
               <div>
                 <div className="flex justify-between items-center mb-1">
-                  <label className="block text-sm font-medium text-gray-700">Password</label>
-                  <Link to="/forgot-password" className="text-xs text-teal-600 hover:underline">
+                  <label
+                    className="block text-sm font-medium text-[#00171F] font-work">
+                    Password
+                  </label>
+                  <Link to="/forgot-password" className="text-xs text-[#003459] hover:underline font-work">
                     Forgot Password?
                   </Link>
                 </div>
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
-                    className="block w-full rounded-lg border border-gray-300 p-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition"
+                    className="block w-full rounded-lg border border-gray-300 p-2.5 pr-10 text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -177,18 +249,16 @@ const LoginForm = () => {
               {/* Sign In */}
               <button
                 type="submit"
-                className="w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold text-white transition duration-200 mt-2"
-                style={{ background: 'linear-gradient(135deg, #1a5f7a 0%, #0d3d52 100%)' }}
+                className="w-full flex justify-center items-center py-2.5 px-4 rounded-lg text-sm font-semibold text-white transition duration-200 mt-2 font-fugaz tracking-[0.05em]"
+                style={{ background: '#003459' }}
                 onMouseOver={(e) =>
-                  ((e.currentTarget as HTMLButtonElement).style.background =
-                    'linear-gradient(135deg, #1e6d8a 0%, #0f4760 100%)')
+                  ((e.currentTarget as HTMLButtonElement).style.background = '#00171F')
                 }
                 onMouseOut={(e) =>
-                  ((e.currentTarget as HTMLButtonElement).style.background =
-                    'linear-gradient(135deg, #1a5f7a 0%, #0d3d52 100%)')
+                  ((e.currentTarget as HTMLButtonElement).style.background = '#003459')
                 }
               >
-                Sign In
+                Sign in
               </button>
             </form>
 
@@ -200,9 +270,9 @@ const LoginForm = () => {
             </div>
 
             {/* Register */}
-            <p className="text-center text-xs text-gray-500">
+            <p className="text-center text-xs text-gray-500 font-work">
               Not registered yet?{' '}
-              <Link to="/register" className="text-teal-600 font-semibold hover:underline">
+              <Link to="/register" className="text-[#003459] font-semibold hover:underline font-work">
                 Create an account
               </Link>
             </p>
@@ -211,8 +281,7 @@ const LoginForm = () => {
           {/* Mobile-only footer */}
           <div className="lg:hidden text-center mt-6 mb-2">
             <p
-              className="text-white text-xs italic opacity-80 leading-relaxed"
-              style={{ fontFamily: 'Georgia, serif' }}
+              className="text-white text-xs italic opacity-70 leading-relaxed font-fugaz"
             >
               Sangguniang Kabataan
               <br />

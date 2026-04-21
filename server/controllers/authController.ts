@@ -3,7 +3,7 @@ dotenv.config();
 
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';                          
+import crypto from 'crypto';
 import User, { IUser } from '../models/User';
 import jwt from 'jsonwebtoken';
 import { Readable } from 'stream';
@@ -36,8 +36,8 @@ const sendBrevoEmail = async (to: string, subject: string, htmlContent: string) 
     },
     body: JSON.stringify({
       sender: {
-        name: 'SK Youth Registration',
-        email: process.env.EMAIL_USER || 'noreply@skprofiling.com',
+        name: 'SK System',
+        email: 'noreply@sigla-calumpangcerca.com',
       },
       to: [{ email: to }],
       subject: subject,
@@ -65,13 +65,13 @@ const uploadToCloudinary = (buffer: Buffer, originalname: string): Promise<strin
       api_key: process.env.CLOUDINARY_API_KEY,
       api_secret: process.env.CLOUDINARY_API_SECRET
     });
-    
+
     console.log('🔧 Cloudinary config:', {
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
       api_key: process.env.CLOUDINARY_API_KEY ? 'Set' : 'Missing',
       api_secret: process.env.CLOUDINARY_API_SECRET ? 'Set' : 'Missing'
     });
-    
+
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder: 'sk-profile-pictures',
@@ -126,7 +126,7 @@ export const sendVerificationCode = async (req: Request, res: Response) => {
 
     // Generate verification code
     const code = generateVerificationCode();
-    
+
     // Store code with expiration (10 minutes)
     verificationCodes.set(email, {
       code,
@@ -144,7 +144,7 @@ export const sendVerificationCode = async (req: Request, res: Response) => {
         <div style="background-color: white; padding: 32px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
           <h2 style="color: #2563eb; margin-bottom: 16px; font-size: 24px;">Email Verification</h2>
           <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">
-            Thank you for registering with SK Youth Registration System! Please use the following verification code to complete your registration:
+            Thank you for registering with SIGLA! Please use the following verification code to complete your registration:
           </p>
           <div style="background-color: #eff6ff; padding: 24px; text-align: center; margin: 24px 0; border-radius: 8px; border: 2px solid #2563eb;">
             <h1 style="color: #1e40af; letter-spacing: 8px; margin: 0; font-size: 36px; font-weight: bold;">${code}</h1>
@@ -157,7 +157,7 @@ export const sendVerificationCode = async (req: Request, res: Response) => {
           </p>
           <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;">
           <p style="color: #9ca3af; font-size: 12px; text-align: center;">
-            SK Youth Registration System © ${new Date().getFullYear()}
+            SIGLA - SK Information System for Growth, Leadership, and Achievement © ${new Date().getFullYear()}
           </p>
         </div>
       </div>
@@ -166,16 +166,16 @@ export const sendVerificationCode = async (req: Request, res: Response) => {
 
     console.log(`✅ Verification code sent to ${email}`);
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: 'Verification code sent successfully',
-      success: true 
+      success: true
     });
 
   } catch (error: any) {
     console.error('Error sending verification code:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Failed to send verification code',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -211,16 +211,16 @@ export const verifyCode = async (req: Request, res: Response) => {
 
     console.log(`✅ Email verified successfully: ${email}`);
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: 'Email verified successfully',
-      success: true 
+      success: true
     });
 
   } catch (error: any) {
     console.error('Error verifying code:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Failed to verify code',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -244,13 +244,13 @@ export const registerUser = async (req: Request, res: Response) => {
   try {
     console.log('📝 Registration request received');
     console.log('Has file?:', !!req.file);
-    
-    const { 
+
+    const {
       email, password, firstName, lastName, middleName, suffix,
-      sex, birthday, civilStatus, educationalBackground, 
-      youthClassification, workStatus, 
+      sex, birthday, civilStatus, educationalBackground,
+      youthClassification, workStatus,
       block, lot, street, purok, contactNumber, houseNumber,
-      registeredSkVoter, registeredNationalVoter, 
+      registeredSkVoter, registeredNationalVoter,
       isPwd, isCicwl, isIndigenous
     } = req.body;
 
@@ -285,15 +285,15 @@ export const registerUser = async (req: Request, res: Response) => {
 
     // 5. Upload profile picture to Cloudinary if provided
     let profilePicture: string | undefined = undefined;
-    
+
     if (req.file) {
       try {
         console.log('📤 Uploading to Cloudinary...');
         profilePicture = await uploadToCloudinary(req.file.buffer, req.file.originalname);
       } catch (uploadError: any) {
         console.error('Failed to upload image:', uploadError);
-        return res.status(500).json({ 
-          message: 'Failed to upload profile picture. Please try again.' 
+        return res.status(500).json({
+          message: 'Failed to upload profile picture. Please try again.'
         });
       }
     }
@@ -315,18 +315,18 @@ export const registerUser = async (req: Request, res: Response) => {
 
     // 7. Save to Database
     const savedUser = await newUser.save();
-    
+
     console.log('✅ User registered successfully');
 
-    res.status(201).json({ 
-      message: 'Registration successful! Your account is pending approval.', 
-      userId: savedUser._id 
+    res.status(201).json({
+      message: 'Registration successful! Your account is pending approval.',
+      userId: savedUser._id
     });
 
   } catch (error: any) {
     console.error('Registration error:', error);
-    res.status(500).json({ 
-      message: error.message || 'Server Error during registration.' 
+    res.status(500).json({
+      message: error.message || 'Server Error during registration.'
     });
   }
 };
@@ -347,7 +347,7 @@ export const loginUser = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, role: 'user' }, 
+      { id: user._id, role: 'user' },
       process.env.JWT_SECRET || 'fallback_secret_key',
       { expiresIn: '1d' }
     );
@@ -387,7 +387,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     console.log('Looking up user:', email);
     const user = await User.findOne({ email });
     console.log('User found:', !!user);
-    
+
     if (!user) {
       return res.status(200).json({
         message: 'If an account with that email exists, a reset link has been sent.',
@@ -397,7 +397,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     const rawToken = crypto.randomBytes(32).toString('hex');
     const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
 
-    user.passwordResetToken  = hashedToken;
+    user.passwordResetToken = hashedToken;
     user.passwordResetExpiry = new Date(Date.now() + 60 * 60 * 1000);
     await user.save();
 
@@ -406,7 +406,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
     // Send password reset email using Brevo API
     await sendBrevoEmail(
       user.email,
-      'SK System – Password Reset Request',
+      'SIGLA – Password Reset Request',
       `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px;">
         <h2 style="color: #1e40af;">Password Reset Request</h2>
@@ -460,7 +460,7 @@ export const resetPassword = async (req: Request, res: Response) => {
     }
 
     if (user.passwordResetExpiry < new Date()) {
-      user.passwordResetToken  = null;
+      user.passwordResetToken = null;
       user.passwordResetExpiry = null;
       await user.save();
       return res.status(400).json({ message: 'Reset token has expired. Please request a new one.' });
@@ -474,7 +474,7 @@ export const resetPassword = async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     user.passwordHash = await bcrypt.hash(newPassword, salt);
 
-    user.passwordResetToken  = null;
+    user.passwordResetToken = null;
     user.passwordResetExpiry = null;
 
     await user.save();
