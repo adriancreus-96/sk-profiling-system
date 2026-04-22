@@ -213,11 +213,11 @@ const AnnouncementCard = ({ title, date, description, isPermanent }: {
   </div>
 );
 
-const ProgramCard = ({ title, description, color }: { title: string; description: string; color: string }) => (
+/*const ProgramCard = ({ title, description, color }: { title: string; description: string; color: string }) => (
   <div className={`${color} border rounded-xl p-4`}>
     <h4 className="font-bold text-sm mb-0.5 font-fugaz">{title}</h4>
     <p className="text-xs opacity-80 font-work">{description}</p>
   </div>
-);
+);*/
 
 export default HomePage;
