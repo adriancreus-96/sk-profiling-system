@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from "crypto";
+
 
 export interface IEvent extends Document {
   eventId: string;              // Unique ID like "EVT-2026-ABC123"
@@ -113,7 +114,7 @@ const EventSchema = new Schema<IEvent>({
 EventSchema.pre('validate', function() {
   if (!this.eventId) {
     const currentYear = new Date().getFullYear();
-    const uniqueSuffix = uuidv4().split('-')[0].toUpperCase();
+    const uniqueSuffix = randomUUID().split('-')[0].toUpperCase();
     this.eventId = `EVT-${currentYear}-${uniqueSuffix}`;
     this.qrCode = this.eventId; // QR code contains the event ID
   }

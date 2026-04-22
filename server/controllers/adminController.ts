@@ -3,7 +3,7 @@ dotenv.config();
 
 import { Request, Response } from 'express';
 import User from '../models/User';
-import { v4 as uuidv4 } from 'uuid';
+import { randomUUID } from "crypto";
 import bcrypt from 'bcrypt';
 import Admin from '../models/Admin';
 import jwt from 'jsonwebtoken';
@@ -163,7 +163,7 @@ export const approveUser = async (req: Request, res: Response) => {
     }
 
     const currentYear = new Date().getFullYear();
-    const uniqueSuffix = uuidv4().split('-')[0].toUpperCase();
+    const uniqueSuffix = randomUUID().split('-')[0].toUpperCase();
     const generatedId = `SK-${currentYear}-${uniqueSuffix}`;
 
     user.status = 'Approved';
@@ -337,7 +337,7 @@ export const createProfileAndApprove = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const currentYear = new Date().getFullYear();
-    const uniqueSuffix = uuidv4().split('-')[0].toUpperCase();
+    const uniqueSuffix = randomUUID().split('-')[0].toUpperCase();
     const generatedId = `SK-${currentYear}-${uniqueSuffix}`;
 
     // Handle profile picture upload if provided
