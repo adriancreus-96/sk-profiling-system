@@ -47,14 +47,18 @@ const LoginForm = () => {
             </defs>
             <text x="50%" y="100" textAnchor="middle" fill="none"
               stroke="url(#strokeGradLogin)" strokeWidth="30"
-              style={{ fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '150px',
+              style={{
+                fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '150px',
                 fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0em',
-                filter: 'drop-shadow(0px 8px 4px #003459)' }}>
+                filter: 'drop-shadow(0px 8px 4px #003459)'
+              }}>
               SIGLA
             </text>
             <text x="50%" y="100" textAnchor="middle" fill="#00171F" stroke="#00171F" strokeWidth="2"
-              style={{ fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '150px',
-                fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0em' }}>
+              style={{
+                fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '150px',
+                fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0em'
+              }}>
               SIGLA
             </text>
           </svg>
@@ -62,7 +66,7 @@ const LoginForm = () => {
         <p className="text-white text-xs mt-2 text-center italic opacity-90 font-fugaz [filter:drop-shadow(0px_2px_2px_#003459)]">
           <span className="font-bold text-[#00171F]">S</span>K{' '}
           <span className="font-bold text-[#00171F]">I</span>nfosystem for{' '}
-          <span className="font-bold text-[#00171F]">G</span>rowth,{' '}
+          <span className="font-bold text-[#00171F]">G</span>rowth,<br />
           <span className="font-bold text-[#00171F]">L</span>eadership, and{' '}
           <span className="font-bold text-[#00171F]">A</span>chievement
         </p>

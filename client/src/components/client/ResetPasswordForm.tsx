@@ -69,7 +69,7 @@ const Wrapper = ({ subtitle, children }: { subtitle: string; children: React.Rea
       <p className="text-white text-xs mt-2 text-center italic opacity-90 font-fugaz [filter:drop-shadow(0px_2px_2px_#003459)]">
         <span className="font-bold text-[#00171F]">S</span>K{' '}
         <span className="font-bold text-[#00171F]">I</span>nfosystem for{' '}
-        <span className="font-bold text-[#00171F]">G</span>rowth,{' '}
+        <span className="font-bold text-[#00171F]">G</span>rowth,<br />
         <span className="font-bold text-[#00171F]">L</span>eadership, and{' '}
         <span className="font-bold text-[#00171F]">A</span>chievement
       </p>
@@ -91,12 +91,12 @@ const ResetPasswordForm = () => {
   const token = searchParams.get('token');
   const email = searchParams.get('email');
 
-  const [newPassword, setNewPassword]       = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading]               = useState(false);
-  const [success, setSuccess]               = useState(false);
-  const [error, setError]                   = useState('');
-  const [showPassword, setShowPassword]     = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordValidation, setPasswordValidation] = useState({
     hasMinLength: false,
@@ -241,14 +241,13 @@ const ResetPasswordForm = () => {
               <div className="mt-2 bg-gray-50 rounded-lg p-2.5 space-y-1 text-xs border border-gray-100">
                 {[
                   { key: 'hasMinLength', label: 'At least 8 characters' },
-                  { key: 'hasLetter',    label: 'Contains a letter (A-Z or a-z)' },
-                  { key: 'hasNumber',    label: 'Contains a number (0-9)' },
+                  { key: 'hasLetter', label: 'Contains a letter (A-Z or a-z)' },
+                  { key: 'hasNumber', label: 'Contains a number (0-9)' },
                 ].map(r => (
                   <div
                     key={r.key}
-                    className={`flex items-center gap-1.5 font-work ${
-                      passwordValidation[r.key as keyof typeof passwordValidation] ? 'text-green-600' : 'text-gray-400'
-                    }`}
+                    className={`flex items-center gap-1.5 font-work ${passwordValidation[r.key as keyof typeof passwordValidation] ? 'text-green-600' : 'text-gray-400'
+                      }`}
                   >
                     <span>{passwordValidation[r.key as keyof typeof passwordValidation] ? '✓' : '○'}</span>
                     <span>{r.label}</span>
@@ -268,10 +267,9 @@ const ResetPasswordForm = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className={`${inp} pr-10 ${
-                  confirmPassword && passwordsMatch()  ? 'border-green-400 bg-green-50' :
-                  confirmPassword && !passwordsMatch() ? 'border-red-400 bg-red-50'    : ''
-                }`}
+                className={`${inp} pr-10 ${confirmPassword && passwordsMatch() ? 'border-green-400 bg-green-50' :
+                    confirmPassword && !passwordsMatch() ? 'border-red-400 bg-red-50' : ''
+                  }`}
               />
               <button
                 type="button"

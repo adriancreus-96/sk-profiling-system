@@ -27,14 +27,18 @@ const SiglaWordmark = () => (
     </defs>
     <text x="50%" y="100" textAnchor="middle" fill="none"
       stroke="url(#strokeGradReg)" strokeWidth="30" strokeLinejoin="round"
-      style={{ fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '150px',
+      style={{
+        fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '150px',
         fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0em',
-        filter: 'drop-shadow(0px 8px 4px #003459)' }}>
+        filter: 'drop-shadow(0px 8px 4px #003459)'
+      }}>
       SIGLA
     </text>
     <text x="50%" y="100" textAnchor="middle" fill="#00171F" stroke="#00171F" strokeWidth="2"
-      style={{ fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '150px',
-        fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0em' }}>
+      style={{
+        fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '150px',
+        fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0em'
+      }}>
       SIGLA
     </text>
   </svg>
@@ -219,7 +223,7 @@ const RegistrationForm = () => {
         <p className="text-white text-xs mt-2 text-center italic opacity-90 font-fugaz [filter:drop-shadow(0px_2px_2px_#003459)]">
           <span className="font-bold text-[#00171F]">S</span>K{' '}
           <span className="font-bold text-[#00171F]">I</span>nfosystem for{' '}
-          <span className="font-bold text-[#00171F]">G</span>rowth,{' '}
+          <span className="font-bold text-[#00171F]">G</span>rowth,<br />
           <span className="font-bold text-[#00171F]">L</span>eadership, and{' '}
           <span className="font-bold text-[#00171F]">A</span>chievement
         </p>
@@ -229,11 +233,10 @@ const RegistrationForm = () => {
           <div className="flex items-center gap-1 mt-4">
             {STEPS.map((step, idx) => (
               <React.Fragment key={step.id}>
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${
-                  currentStep > step.id ? 'bg-[#003459] text-white'
-                  : currentStep === step.id ? 'bg-white text-[#003459] ring-2 ring-white/50'
-                  : 'bg-white/25 text-white/60'
-                }`}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300 ${currentStep > step.id ? 'bg-[#003459] text-white'
+                    : currentStep === step.id ? 'bg-white text-[#003459] ring-2 ring-white/50'
+                      : 'bg-white/25 text-white/60'
+                  }`}>
                   {currentStep > step.id ? <CheckCircle className="w-3 h-3" /> : step.id}
                 </div>
                 {idx < STEPS.length - 1 && (
@@ -351,7 +354,7 @@ const RegistrationForm = () => {
               <div>
                 <label className="block text-sm font-medium text-[#00171F] mb-1 font-work">Civil Status</label>
                 <select name="civilStatus" value={formData.civilStatus} onChange={handleChange} className={inp}>
-                  {['Single','Married','Widowed','Separated','Live-in','Annulled','Others'].map(v => <option key={v}>{v}</option>)}
+                  {['Single', 'Married', 'Widowed', 'Separated', 'Live-in', 'Annulled', 'Others'].map(v => <option key={v}>{v}</option>)}
                 </select>
               </div>
             </div>
@@ -375,7 +378,7 @@ const RegistrationForm = () => {
                 <div>
                   <label className="block text-sm font-medium text-[#00171F] mb-1 font-work">Purok</label>
                   <select name="purok" value={formData.purok} onChange={handleChange} className={inp}>
-                    {[1,2,3,4,5,6,7].map(n => <option key={n} value={`Purok ${n}`}>Purok {n}</option>)}
+                    {[1, 2, 3, 4, 5, 6, 7].map(n => <option key={n} value={`Purok ${n}`}>Purok {n}</option>)}
                   </select>
                 </div>
                 <div>
@@ -399,19 +402,19 @@ const RegistrationForm = () => {
               <div>
                 <label className="block text-sm font-medium text-[#00171F] mb-1 font-work">Educational Background</label>
                 <select name="educationalBackground" value={formData.educationalBackground} onChange={handleChange} className={inp}>
-                  {['Elementary Level','Elementary Grad','High School Level','High School Grad','Vocational Grad','College Level','College Grad','Masters Level','Masters Grad','Doctorate Level','Doctorate Graduate'].map(v => <option key={v}>{v}</option>)}
+                  {['Elementary Level', 'Elementary Grad', 'High School Level', 'High School Grad', 'Vocational Grad', 'College Level', 'College Grad', 'Masters Level', 'Masters Grad', 'Doctorate Level', 'Doctorate Graduate'].map(v => <option key={v}>{v}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#00171F] mb-1 font-work">Youth Classification</label>
                 <select name="youthClassification" value={formData.youthClassification} onChange={handleChange} className={inp}>
-                  {['In School Youth','Out of School Youth','Working Youth','Youth with Specific Needs'].map(v => <option key={v}>{v}</option>)}
+                  {['In School Youth', 'Out of School Youth', 'Working Youth', 'Youth with Specific Needs'].map(v => <option key={v}>{v}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#00171F] mb-1 font-work">Employment Status</label>
                 <select name="workStatus" value={formData.workStatus} onChange={handleChange} className={inp}>
-                  {['Employed','Unemployed','Self-Employed','Currently looking for a Job','Not Interested Looking for a Job'].map(v => <option key={v}>{v}</option>)}
+                  {['Employed', 'Unemployed', 'Self-Employed', 'Currently looking for a Job', 'Not Interested Looking for a Job'].map(v => <option key={v}>{v}</option>)}
                 </select>
               </div>
             </div>
@@ -486,7 +489,7 @@ const RegistrationForm = () => {
                   <div className="flex gap-2 mt-2">
                     <input type="text" placeholder="Verification Code" maxLength={6}
                       value={emailVerification.verificationCode}
-                      onChange={e => setEmailVerification(prev => ({ ...prev, verificationCode: e.target.value.replace(/\D/g,'') }))}
+                      onChange={e => setEmailVerification(prev => ({ ...prev, verificationCode: e.target.value.replace(/\D/g, '') }))}
                       className={`${inp} flex-1`} />
                     <button type="button" onClick={verifyCode}
                       disabled={emailVerification.isVerifying || emailVerification.verificationCode.length !== 6}
