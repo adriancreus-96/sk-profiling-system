@@ -4,20 +4,20 @@ dotenv.config();
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import path from 'path';  // ← ADD THIS IMPORT
+import path from 'path';
 import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
 import userRoutes from './routes/userRoutes';
 import eventRoutes from './routes/eventRoutes';
+import announcementRoutes from './routes/announcementRoutes'; // ← ADD
 
 const app = express();
 
 // Middleware
 app.use(cors());
-app.use(express.json()); // Essential for parsing JSON bodies (like login forms)
+app.use(express.json());
 
 // ✅ Serve uploaded files as static assets
-// IMPORTANT: This should use path.join to ensure cross-platform compatibility
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database Connection
@@ -38,6 +38,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/admin/events', eventRoutes);
+app.use('/api/announcements', announcementRoutes); // ← ADD
 
 // Start Server
 const PORT = process.env.PORT || 5000;

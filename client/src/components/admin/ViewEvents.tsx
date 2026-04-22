@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Calendar, MapPin, Users, Award, Tag, Clock,
-  Edit, XCircle, QrCode, Eye, Loader2, Search, Trash2
+  Edit, XCircle, QrCode, Eye, Loader2, Search, Trash2, ZoomIn
 } from 'lucide-react';
 import axios from 'axios';
 import AttendeeProfileModal from '../../modals/AttendeeProfileModal';
 import QRScannerModal from '../../modals/QRScannerModal';
+import ImageLightbox from '../../components/ImageLightbox'; // adjust path as needed
 
 const API_URL = import.meta.env.VITE_API_URL || "localhost:5173";
 
@@ -62,9 +63,6 @@ interface Attendee {
   isIndigenous?: boolean;
 }
 
-// Shared button style helpers
-
-
 const ViewEvents = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'today' | 'past' | 'cancelled'>('upcoming');
@@ -81,6 +79,7 @@ const ViewEvents = () => {
   const [selectedAttendee, setSelectedAttendee] = useState<Attendee | null>(null);
   const [showQRScanner, setShowQRScanner] = useState(false);
   const [scannerEvent, setScannerEvent] = useState<Event | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; title: string } | null>(null);
 
   useEffect(() => { fetchEvents(); }, []);
 
@@ -267,6 +266,7 @@ const ViewEvents = () => {
                 onDelete={handleDelete}
                 onRecordAttendance={handleRecordAttendance}
                 onViewAttendance={handleViewAttendance}
+                onImageClick={(src, title) => setLightboxImage({ src, title })}
               />
             ))}
           </div>
@@ -308,6 +308,15 @@ const ViewEvents = () => {
           onAttendanceMarked={handleAttendanceMarked}
         />
       )}
+
+      {/* Global lightbox */}
+      {lightboxImage && (
+        <ImageLightbox
+          src={lightboxImage.src}
+          alt={lightboxImage.title}
+          onClose={() => setLightboxImage(null)}
+        />
+      )}
     </div>
   );
 };
@@ -321,15 +330,33 @@ interface EventCardProps {
   onDelete: (eventId: string, eventTitle: string) => void;
   onRecordAttendance: (event: Event) => void;
   onViewAttendance: (event: Event, tab: 'upcoming' | 'today' | 'past' | 'cancelled') => void;
+  onImageClick: (src: string, title: string) => void;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event, tab, onEdit, onCancel, onDelete, onRecordAttendance, onViewAttendance }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, tab, onEdit, onCancel, onDelete, onRecordAttendance, onViewAttendance, onImageClick }) => {
   const [imgError, setImgError] = useState(false);
 
   return (
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+      {/* Banner — clickable if image exists */}
       {event.posterImage && !imgError ? (
-        <img src={event.posterImage} alt={event.title} className="w-full h-40 object-cover" onError={() => setImgError(true)} />
+        <div
+          className="relative group cursor-zoom-in"
+          onClick={() => onImageClick(event.posterImage!, event.title)}
+        >
+          <img
+            src={event.posterImage}
+            alt={event.title}
+            className="w-full h-40 object-cover"
+            onError={() => setImgError(true)}
+          />
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 bg-black/60 text-white text-xs font-semibold font-fugaz px-3 py-2 rounded-lg">
+              <ZoomIn className="w-4 h-4" /> View Full Image
+            </div>
+          </div>
+        </div>
       ) : (
         <div className="w-full h-40 flex items-center justify-center" style={{ background: 'linear-gradient(160deg, #6EB8BB 0%, #5CB0B3 37%, #007EA7 100%)' }}>
           <Calendar className="w-12 h-12 text-white/30" />
@@ -437,7 +464,6 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
       <div className="bg-white w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col">
 
-        {/* Modal header */}
         <div
           className="px-6 py-5 flex items-center justify-between shrink-0"
           style={{ background: 'linear-gradient(160deg, #6EB8BB 0%, #007EA7 100%)' }}
@@ -451,7 +477,6 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
           </button>
         </div>
 
-        {/* Stats row */}
         {(tab === 'today' || tab === 'past') && (
           <div className="bg-[#003459]/5 px-6 py-4 grid grid-cols-3 gap-4 border-b border-gray-100 shrink-0">
             <div className="text-center">
@@ -471,7 +496,6 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
           </div>
         )}
 
-        {/* Filter + search */}
         <div className="px-6 py-4 bg-white border-b border-gray-100 space-y-3 shrink-0">
           {tab !== 'upcoming' && tab !== 'cancelled' && (
             <div className="flex gap-2">
@@ -502,7 +526,6 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
           </div>
         </div>
 
-        {/* List */}
         <div className="flex-1 overflow-y-auto p-6">
           {displayedList.length === 0 ? (
             <div className="text-center py-12">
@@ -544,7 +567,6 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
           )}
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-4 border-t border-gray-100 flex justify-end shrink-0">
           <button
             onClick={onClose}

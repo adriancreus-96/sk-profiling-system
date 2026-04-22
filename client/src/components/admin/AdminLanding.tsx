@@ -115,7 +115,7 @@ const AdminLanding = () => {
       title: 'Create New Announcement',
       description: 'Make important announcements for the community',
       icon: UserPlus,
-      path: '/admin/create-profile',
+      path: '/admin/create-announcement',
     },
     {
       title: 'Post New Event',

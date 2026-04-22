@@ -11,6 +11,7 @@
   import HomePage from './components/client/HomePage';
   import Setup2FA from './components/admin/Setup2FA';
   import ForgotPasswordForm from './components/client/ForgotPasswordForm';
+import CreateAnnouncement from './components/admin/CreateAnnouncement';
 
   const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     const token = localStorage.getItem('token');
@@ -95,10 +96,10 @@
 
         {/* Create New Profile */}
         <Route
-          path="/admin/create-profile"
+          path="/admin/create-announcement"
           element={
             <AdminProtectedRoute>
-              <CreateProfile />
+              <CreateAnnouncement />
             </AdminProtectedRoute>
           }
         />

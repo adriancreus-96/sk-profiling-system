@@ -5,7 +5,7 @@ import UserProfile from './UserProfile';
 import EventsPage from './EventsPage';
 import type { Announcement } from '../admin/CreateAnnouncement';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || 'localhost:5173';
 
 type TabType = 'home' | 'events' | 'profile';
 

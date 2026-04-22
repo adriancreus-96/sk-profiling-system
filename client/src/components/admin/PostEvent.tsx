@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   ArrowLeft, Calendar, Clock, MapPin, Users, Award,
-  Image as ImageIcon, Tag, FileText, Save, Eye
+  Image as ImageIcon, Tag, FileText, Save, Eye, ZoomIn
 } from 'lucide-react';
 import axios from 'axios';
+import ImageLightbox from '../../components/ImageLightbox'; // adjust path as needed
 
 const API_URL = import.meta.env.VITE_API_URL || "localhost:5173";
 
@@ -40,6 +41,7 @@ const PostEvent = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     if (editEvent) {
@@ -170,8 +172,26 @@ const PostEvent = () => {
               </label>
               {imagePreview ? (
                 <div className="relative">
-                  <img src={imagePreview} alt="Event poster preview" className="w-full h-64 object-cover rounded-xl"
-                    onError={() => setImagePreview(null)} />
+                  {/* Clickable image — opens lightbox */}
+                  <div
+                    className="relative group cursor-zoom-in"
+                    onClick={() => setLightboxOpen(true)}
+                  >
+                    <img
+                      src={imagePreview}
+                      alt="Event poster preview"
+                      className="w-full h-64 object-cover rounded-xl transition"
+                      onError={() => setImagePreview(null)}
+                    />
+                    {/* Hover overlay hint */}
+                    <div className="absolute inset-0 rounded-xl bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
+                      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 bg-black/60 text-white text-xs font-semibold font-fugaz px-3 py-2 rounded-lg">
+                        <ZoomIn className="w-4 h-4" /> View Full Image
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Remove button */}
                   <button
                     type="button"
                     onClick={() => { setImagePreview(null); setFormData(prev => ({ ...prev, posterImage: null })); }}
@@ -182,6 +202,7 @@ const PostEvent = () => {
                   >
                     Remove
                   </button>
+                  {/* Change image button */}
                   <label
                     className="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg text-xs font-semibold text-white transition duration-200 font-fugaz cursor-pointer"
                     style={{ background: '#003459' }}
@@ -196,8 +217,7 @@ const PostEvent = () => {
                 <label className="flex flex-col items-center justify-center w-full h-56 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
                   <ImageIcon className="w-10 h-10 text-gray-300 mb-3" />
                   <p className="text-sm text-gray-400 font-work"><span className="font-semibold text-gray-500">Click to upload</span> or drag and drop</p>
-                  <p className="text-xs text-gray-400 mt-1 font-work">PNG, JPG, GIF, WEBP up to 5MB</p>
-                  <p className="text-xs text-gray-400 mt-1 font-work">Recommended 1280×720 (16:9)</p>
+                  <p className="text-xs text-gray-400 mt-1 font-work">PNG, JPG, WEBP up to 5MB — recommended 1280×720 (16:9)</p>
                   <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                 </label>
               )}
@@ -337,10 +357,18 @@ const PostEvent = () => {
                   : (isEditMode ? 'Update Event' : 'Publish Event')}
               </button>
             </div>
-
           </form>
         </div>
       </main>
+
+      {/* Lightbox */}
+      {lightboxOpen && imagePreview && (
+        <ImageLightbox
+          src={imagePreview}
+          alt={formData.title || 'Event poster'}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </div>
   );
 };
