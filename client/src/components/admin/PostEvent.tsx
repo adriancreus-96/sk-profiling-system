@@ -197,6 +197,7 @@ const PostEvent = () => {
                   <ImageIcon className="w-10 h-10 text-gray-300 mb-3" />
                   <p className="text-sm text-gray-400 font-work"><span className="font-semibold text-gray-500">Click to upload</span> or drag and drop</p>
                   <p className="text-xs text-gray-400 mt-1 font-work">PNG, JPG, GIF, WEBP up to 5MB</p>
+                  <p className="text-xs text-gray-400 mt-1 font-work">Recommended 1280×720 (16:9)</p>
                   <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                 </label>
               )}

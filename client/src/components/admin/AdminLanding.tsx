@@ -112,8 +112,8 @@ const AdminLanding = () => {
       path: '/admin/profiles',
     },
     {
-      title: 'Create New Profile',
-      description: 'Add a new youth member to the system',
+      title: 'Create New Announcement',
+      description: 'Make important announcements for the community',
       icon: UserPlus,
       path: '/admin/create-profile',
     },
@@ -171,7 +171,7 @@ const AdminLanding = () => {
 
         {/* Welcome */}
         <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
-          <h1 className="text-2xl font-bold text-white font-fugaz">Hello, Admin! 👋</h1>
+          <h1 className="text-2xl font-bold text-white font-fugaz">Hello, Admin!</h1>
           <p className="text-white/70 text-sm mt-1 font-work">Welcome back to your SIGLA dashboard.</p>
         </div>
 

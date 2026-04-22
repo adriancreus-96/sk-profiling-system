@@ -5,7 +5,7 @@
   import AdminLogin from './components/admin/AdminLogin';
   import AdminLanding from './components/admin/AdminLanding';
   import AdminProfiles from './components/admin/AdminProfiles';
-  import CreateProfile from './components/admin/CreateProfile';
+  import CreateProfile from './components/admin/CreateAnnouncement';
   import PostEvent from './components/admin/PostEvent';
   import ViewEvents from './components/admin/ViewEvents';
   import HomePage from './components/client/HomePage';
