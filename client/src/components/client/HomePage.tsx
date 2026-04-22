@@ -6,6 +6,29 @@ import EventsPage from './EventsPage';
 
 type TabType = 'home' | 'events' | 'profile';
 
+// ── SIGLA SVG wordmark (compact for header) ──
+const SiglaHeader = () => (
+  <svg viewBox="0 0 620 130" xmlns="http://www.w3.org/2000/svg"
+    style={{ overflow: 'visible', display: 'block', height: '28px', width: 'auto' }}>
+    <defs>
+      <linearGradient id="strokeGradHome" x1="45%" y1="100%" x2="55%" y2="0%">
+        <stop offset="0%" stopColor="#0B5A73" stopOpacity="0.32" />
+        <stop offset="25%" stopColor="#15AAD9" stopOpacity="0.32" />
+        <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.32" />
+      </linearGradient>
+    </defs>
+    <text x="50%" y="100" textAnchor="middle" fill="none"
+      stroke="url(#strokeGradHome)" strokeWidth="30" strokeLinejoin="round"
+      style={{ fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '200px', fontWeight: 900, letterSpacing: '-0.01em', filter: 'drop-shadow(0px 6px 0px rgba(0,0,0,0.3))' }}>
+      SIGLA
+    </text>
+    <text x="50%" y="100" textAnchor="middle" fill="#00171F" stroke="#00171F" strokeWidth="2"
+      style={{ fontFamily: "'Fugaz One', Impact, sans-serif", fontSize: '200px', fontWeight: 900, letterSpacing: '-0.02em' }}>
+      SIGLA
+    </text>
+  </svg>
+);
+
 const HomePage = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>('home');
@@ -37,23 +60,20 @@ const HomePage = () => {
   return (
     <div
       className="min-h-screen flex flex-col"
-      style={{ background: 'linear-gradient(160deg, #0a2a3a 0%, #0d4a5c 40%, #1a7a8a 100%)' }}
+      style={{ background: 'linear-gradient(160deg, #6EB8BB 0%, #5CB0B3 37%, #007EA7 100%)' }}
     >
       {/* ── Header ── */}
-      <header className="sticky top-0 z-10 bg-white/10 backdrop-blur-sm border-b border-white/10">
+      <header className="sticky top-0 z-10 bg-white/15 backdrop-blur-sm border-b border-white/20">
         <div className="max-w-screen-lg mx-auto px-4 py-3 flex justify-between items-center">
-          <div>
-            <h1
-              className="text-2xl font-black text-white leading-none tracking-tight"
-              style={{ fontFamily: "'Georgia', serif", fontStyle: 'italic' }}
-            >
-              SIGLA
-            </h1>
-            <p className="text-cyan-300 text-xs tracking-widest uppercase">Welcome, {user.firstName}!</p>
+          <div className="flex items-end gap-3 text-[#00171F] mt-3">
+            <SiglaHeader />
           </div>
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 text-xs text-white/70 hover:text-white font-medium transition bg-white/10 hover:bg-white/20 px-3 py-2 rounded-lg"
+            className="flex items-center gap-1.5 text-xs font-semibold text-white transition duration-200 font-fugaz tracking-[0.05em] px-3 py-2 rounded-lg"
+            style={{ background: 'rgba(0,52,89,0.35)' }}
+            onMouseOver={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'rgba(0,23,31,0.5)')}
+            onMouseOut={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'rgba(0,52,89,0.35)')}
           >
             <LogOut className="w-3.5 h-3.5" /> Logout
           </button>
@@ -66,7 +86,7 @@ const HomePage = () => {
       </main>
 
       {/* ── Bottom Tab Navigation ── */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/10 shadow-2xl">
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/10 backdrop-blur-md border-t border-white/20 shadow-2xl">
         <div className="max-w-screen-lg mx-auto flex justify-around items-center py-2">
           <TabButton icon={<Home className="w-5 h-5" />}     label="Home"    active={activeTab === 'home'}    onClick={() => setActiveTab('home')} />
           <TabButton icon={<Calendar className="w-5 h-5" />} label="Events"  active={activeTab === 'events'}  onClick={() => setActiveTab('events')} />
@@ -81,39 +101,39 @@ const HomePage = () => {
 const TabButton = ({ icon, label, active, onClick }: {
   icon: React.ReactNode; label: string; active: boolean; onClick: () => void;
 }) => (
-  <button
-    onClick={onClick}
+  <button onClick={onClick}
     className={`flex flex-col items-center justify-center py-2 px-6 rounded-xl transition-all ${
-      active ? 'text-cyan-300 bg-white/10' : 'text-white/40 hover:text-white/70'
-    }`}
-  >
-    {icon}
-    <span className={`text-xs mt-1 font-semibold ${active ? 'text-cyan-300' : 'text-white/40'}`}>{label}</span>
+      active ? 'bg-[#00171F]/20' : 'hover:bg-[#00171F]/10 text-[#00171F]/10'
+    }`}>
+    <span className="text-[#00171F]">{icon}</span>
+    <span className="text-xs mt-1 font-fugaz tracking-[0.05em] text-[#00171F]">{label}</span>
   </button>
 );
+ 
 
 // ── Home Tab Content ──
 const HomeContent = ({ user }: { user: any }) => (
   <div className="max-w-screen-lg mx-auto px-4 py-6 space-y-5">
+
     {/* Welcome Banner */}
-    <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/10 shadow-lg">
-      <h2 className="text-xl font-bold text-white mb-1">
-        Welcome back, {user.firstName}! 👋
+    <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-6 border border-white/20 shadow-lg">
+      <h2 className="text-xl font-bold text-white mb-1 font-fugaz">
+        Welcome back, {user.firstName}!
       </h2>
-      <p className="text-cyan-200 text-sm">
+      <p className="text-white/80 text-sm font-work">
         Stay updated with the latest SK events and programs in your community.
       </p>
     </div>
 
     {/* Quick Stats */}
     <div className="grid grid-cols-2 gap-4">
-      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10 shadow">
-        <p className="text-cyan-300 text-xs uppercase font-semibold tracking-wider mb-1">SK Points</p>
-        <p className="text-3xl font-black text-white">{user.points || 0}</p>
+      <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20 shadow">
+        <p className="text-white/60 text-xs uppercase font-semibold tracking-wider mb-1 font-work">SK Points</p>
+        <p className="text-3xl font-black text-white font-fugaz">{user.points || 0}</p>
       </div>
-      <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/10 shadow">
-        <p className="text-cyan-300 text-xs uppercase font-semibold tracking-wider mb-1">Status</p>
-        <p className={`text-sm font-bold ${user.status === 'Approved' ? 'text-green-400' : 'text-yellow-400'}`}>
+      <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-4 border border-white/20 shadow">
+        <p className="text-white/60 text-xs uppercase font-semibold tracking-wider mb-1 font-work">Status</p>
+        <p className={`text-sm font-bold font-fugaz ${user.status === 'Approved' ? 'text-green-300' : 'text-yellow-300'}`}>
           {user.status}
         </p>
       </div>
@@ -121,10 +141,10 @@ const HomeContent = ({ user }: { user: any }) => (
 
     {/* Announcements */}
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-      <div className="px-5 pt-5 pb-3">
-        <h3 className="text-base font-bold text-gray-800">📢 Announcements</h3>
+      <div className="px-5 pt-5 pb-3 border-b border-gray-100">
+        <h3 className="text-base font-bold text-gray-900 font-fugaz">📢 Announcements</h3>
       </div>
-      <div className="px-5 pb-5 space-y-3">
+      <div className="px-5 py-4 space-y-3">
         <AnnouncementCard
           title="Community Clean-Up Drive"
           date="March 15, 2026"
@@ -140,34 +160,35 @@ const HomeContent = ({ user }: { user: any }) => (
 
     {/* Programs */}
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-      <div className="px-5 pt-5 pb-3">
-        <h3 className="text-base font-bold text-gray-800">🎯 Active Programs</h3>
+      <div className="px-5 pt-5 pb-3 border-b border-gray-100">
+        <h3 className="text-base font-bold text-gray-900 font-fugaz">🎯 Active Programs</h3>
       </div>
-      <div className="px-5 pb-5 space-y-3">
-        <ProgramCard title="Sports Development"  description="Basketball and volleyball leagues ongoing"              color="bg-orange-50 border-orange-200 text-orange-800" />
-        <ProgramCard title="Education Support"   description="Scholarship programs and tutorial sessions"             color="bg-cyan-50 border-cyan-200 text-cyan-800" />
-        <ProgramCard title="Skills Training"     description="Free workshops on digital skills and entrepreneurship"  color="bg-teal-50 border-teal-200 text-teal-800" />
+      <div className="px-5 py-4 space-y-3">
+        <ProgramCard title="Sports Development"  description="Basketball and volleyball leagues ongoing"             color="bg-orange-50 border-orange-200 text-orange-800" />
+        <ProgramCard title="Education Support"   description="Scholarship programs and tutorial sessions"            color="bg-[#003459]/5 border-[#003459]/20 text-[#003459]" />
+        <ProgramCard title="Skills Training"     description="Free workshops on digital skills and entrepreneurship" color="bg-teal-50 border-teal-200 text-teal-800" />
       </div>
     </div>
+
   </div>
 );
 
 // ── Announcement Card ──
 const AnnouncementCard = ({ title, date, description }: { title: string; date: string; description: string }) => (
-  <div className="border-l-4 border-cyan-500 bg-cyan-50 p-4 rounded-r-xl">
+  <div className="border-l-4 border-[#003459] bg-[#003459]/5 p-4 rounded-r-xl">
     <div className="flex justify-between items-start mb-1">
-      <h4 className="font-bold text-gray-800 text-sm">{title}</h4>
-      <span className="text-xs text-gray-400 whitespace-nowrap ml-2">{date}</span>
+      <h4 className="font-bold text-gray-800 text-sm font-fugaz">{title}</h4>
+      <span className="text-xs text-gray-400 whitespace-nowrap ml-2 font-work">{date}</span>
     </div>
-    <p className="text-sm text-gray-600">{description}</p>
+    <p className="text-sm text-gray-600 font-work">{description}</p>
   </div>
 );
 
 // ── Program Card ──
 const ProgramCard = ({ title, description, color }: { title: string; description: string; color: string }) => (
   <div className={`${color} border rounded-xl p-4`}>
-    <h4 className="font-bold text-sm mb-0.5">{title}</h4>
-    <p className="text-xs opacity-80">{description}</p>
+    <h4 className="font-bold text-sm mb-0.5 font-fugaz">{title}</h4>
+    <p className="text-xs opacity-80 font-work">{description}</p>
   </div>
 );
 
