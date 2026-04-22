@@ -278,13 +278,13 @@ const PostEvent = () => {
                   <MapPin className="w-4 h-4" /> Location *
                 </label>
                 <input type="text" name="location" value={formData.location} onChange={handleInputChange}
-                  className={errors.location ? inpErr : inp} placeholder="e.g., Barangay Hall" />
+                  className={errors.location ? inpErr : inp}/>
                 {errors.location && <p className="text-red-500 text-xs mt-1 font-work">{errors.location}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-[#00171F] mb-1 font-work">Venue Details *</label>
                 <input type="text" name="venue" value={formData.venue} onChange={handleInputChange}
-                  className={errors.venue ? inpErr : inp} placeholder="e.g., Main Auditorium" />
+                  className={errors.venue ? inpErr : inp}/>
                 {errors.venue && <p className="text-red-500 text-xs mt-1 font-work">{errors.venue}</p>}
               </div>
             </div>

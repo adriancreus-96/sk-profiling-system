@@ -34,7 +34,7 @@ const LoginForm = () => {
       style={{ background: 'linear-gradient(160deg, #6EB8BB 0%, #5CB0B3 37%, #007EA7 100%)' }}>
 
       {/* Branding */}
-      <div className="flex flex-col items-center mb-6 mt-4 w-full max-w-sm px-6">
+      <div className="flex flex-col items-center mb-6 mt-4 w-full max-w-sm px-6 pt-6">
         <span className="block w-full">
           <svg viewBox="0 0 620 130" xmlns="http://www.w3.org/2000/svg"
             className="overflow-visible block w-full">

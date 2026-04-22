@@ -132,7 +132,7 @@ const AdminLanding = () => {
   ];
 
   const statCards = [
-    { label: 'Total Active Profiles', value: stats.total,          accent: 'text-white' },
+    { label: 'Total Profiles', value: stats.total,          accent: 'text-white' },
     { label: 'Pending Approvals',     value: stats.pending,        accent: 'text-yellow-300' },
     { label: 'Upcoming Events',       value: stats.upcomingEvents, accent: 'text-white' },
   ];

@@ -245,9 +245,9 @@ const EventCard: React.FC<EventCardProps> = ({ event, onRegister, onUnregister, 
               onClick={() => onUnregister(event.id)}
               disabled={isRegistering}
               className="w-full flex justify-center items-center gap-2 py-2.5 px-4 rounded-lg text-xs font-semibold text-white transition duration-200 font-fugaz tracking-[0.05em] disabled:opacity-50"
-              style={{ background: '#003459' }}
+              style={{ background: '#9ca3af' }}
               onMouseOver={e => { const b = e.currentTarget as HTMLButtonElement; if (!b.disabled) b.style.background = '#00171F'; }}
-              onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = '#003459'; }}
+              onMouseOut={e => { (e.currentTarget as HTMLButtonElement).style.background = '#9ca3af'; }}
             >
               {isRegistering && <Loader2 className="w-4 h-4 animate-spin" />}
               {isRegistering ? 'Processing...' : 'Unregister'}

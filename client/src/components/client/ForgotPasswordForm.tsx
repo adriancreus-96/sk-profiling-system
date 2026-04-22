@@ -73,7 +73,7 @@ const Wrapper = ({ subtitle, children }: { subtitle: string; children: React.Rea
         <span className="font-bold text-[#00171F]">L</span>eadership, and{' '}
         <span className="font-bold text-[#00171F]">A</span>chievement
       </p>
-      <p className="text-white/60 text-xs mt-2 font-fugaz italic">{subtitle}</p>
+      <p className="text-white/60 text-xs mt-2 pt-2 font-fugaz italic">{subtitle}</p>
     </div>
     <div className="w-full max-w-sm lg:max-w-md">{children}</div>
     <div className="text-center mt-8">

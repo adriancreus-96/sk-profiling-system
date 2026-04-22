@@ -73,7 +73,7 @@ const Wrapper = ({ subtitle, children }: { subtitle: string; children: React.Rea
         <span className="font-bold text-[#00171F]">L</span>eadership, and{' '}
         <span className="font-bold text-[#00171F]">A</span>chievement
       </p>
-      <p className="text-white/60 text-xs mt-2 font-fugaz italic">{subtitle}</p>
+      <p className="text-white/60 text-xs mt-2 pt-2 font-fugaz italic">{subtitle}</p>
     </div>
     <div className="w-full max-w-sm lg:max-w-md">{children}</div>
     <div className="text-center mt-8">
@@ -211,7 +211,7 @@ const ResetPasswordForm = () => {
   return (
     <Wrapper subtitle="Reset your password">
       <div className="w-full bg-white rounded-2xl shadow-2xl px-7 py-8 lg:px-10 lg:py-10">
-        <div className="text-center mb-6">
+        <div className="text-center ">
           <h2 className="text-2xl font-bold text-gray-900 lg:text-3xl font-fugaz">Reset Password</h2>
           <p className="text-gray-400 text-xs mt-1 font-work">Enter a new password for your account.</p>
         </div>
