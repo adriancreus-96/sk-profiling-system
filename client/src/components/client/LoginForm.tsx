@@ -63,13 +63,13 @@ const LoginForm = () => {
             </text>
           </svg>
         </span>
-        <p className="text-white text-xs mt-2 text-center italic opacity-90 font-fugaz [filter:drop-shadow(0px_2px_2px_#003459)]">
-          <span className="font-bold text-[#00171F]">S</span>K{' '}
+        <p className="text-white text-[10px] mt-2 text-center italic opacity-90 font-fugaz [filter:drop-shadow(0px_2px_2px_#003459)] whitespace-nowrap">          <span className="font-bold text-[#00171F]">S</span>K{' '}
           <span className="font-bold text-[#00171F]">I</span>nfosystem for{' '}
-          <span className="font-bold text-[#00171F]">G</span>rowth,<br />
+          <span className="font-bold text-[#00171F]">G</span>rowth,{' '}
           <span className="font-bold text-[#00171F]">L</span>eadership, and{' '}
           <span className="font-bold text-[#00171F]">A</span>chievement
         </p>
+
       </div>
 
       {/* Card */}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, MapPin, Users, Award, Tag, Clock, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Users, Award, Tag, Clock, Loader2, ZoomIn } from 'lucide-react';
 import axios from 'axios';
+import ImageLightbox from '../../components/ImageLightbox'; // adjust path as needed
 
 const API_URL = import.meta.env.VITE_API_URL || "localhost:5173";
 
@@ -27,6 +28,7 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [registering, setRegistering] = useState<string | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<{ src: string; title: string } | null>(null);
 
   const fetchEvents = async () => {
     try {
@@ -116,7 +118,6 @@ const EventsPage = () => {
           <p className="text-gray-400 text-xs font-work">Check back soon for new activities!</p>
         </div>
       ) : (
-        /* ── Grid layout matching admin ViewEvents ── */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {events.map((event) => (
             <EventCard
@@ -125,9 +126,19 @@ const EventsPage = () => {
               onRegister={handleRegister}
               onUnregister={handleUnregister}
               isRegistering={registering === event.id}
+              onImageClick={(src, title) => setLightboxImage({ src, title })}
             />
           ))}
         </div>
+      )}
+
+      {/* Global lightbox */}
+      {lightboxImage && (
+        <ImageLightbox
+          src={lightboxImage.src}
+          alt={lightboxImage.title}
+          onClose={() => setLightboxImage(null)}
+        />
       )}
     </div>
   );
@@ -138,23 +149,35 @@ interface EventCardProps {
   onRegister: (eventId: string) => void;
   onUnregister: (eventId: string) => void;
   isRegistering: boolean;
+  onImageClick: (src: string, title: string) => void;
 }
 
-const EventCard: React.FC<EventCardProps> = ({ event, onRegister, onUnregister, isRegistering }) => {
+const EventCard: React.FC<EventCardProps> = ({ event, onRegister, onUnregister, isRegistering, onImageClick }) => {
   const [imgError, setImgError] = useState(false);
   const isFull = event.maxCapacity ? event.registered >= event.maxCapacity : false;
   const isRegistered = event.isRegistered || false;
 
   return (
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col">
-      {/* Banner image / fallback — h-40 matches admin card */}
+      {/* Banner — clickable if image exists */}
       {event.image && !imgError ? (
-        <img
-          src={event.image}
-          alt={event.title}
-          className="w-full h-40 object-cover"
-          onError={() => setImgError(true)}
-        />
+        <div
+          className="relative group cursor-zoom-in"
+          onClick={() => onImageClick(event.image!, event.title)}
+        >
+          <img
+            src={event.image}
+            alt={event.title}
+            className="w-full h-40 object-cover"
+            onError={() => setImgError(true)}
+          />
+          {/* Hover overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center">
+            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 bg-black/60 text-white text-xs font-semibold font-fugaz px-3 py-2 rounded-lg">
+              <ZoomIn className="w-4 h-4" /> View Full Image
+            </div>
+          </div>
+        </div>
       ) : (
         <div
           className="w-full h-40 flex items-center justify-center"
@@ -165,7 +188,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, onRegister, onUnregister, 
       )}
 
       <div className="p-5 space-y-3 flex flex-col flex-1">
-        {/* Title + category */}
+        {/* Title + registered badge */}
         <div>
           <div className="flex items-start justify-between gap-2 mb-2">
             <h3 className="text-base font-bold text-gray-900 line-clamp-2 font-fugaz flex-1">{event.title}</h3>
