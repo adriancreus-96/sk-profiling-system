@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, MapPin, CheckCircle, Clock, Edit2, Save, X, Camera } from 'lucide-react';
+import { User, MapPin, CheckCircle, Clock, Edit2, Save, X, Camera, AlertTriangle } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || "localhost:5173";
 
@@ -45,6 +45,8 @@ const UserProfile = () => {
   const [fetching, setFetching] = useState(true);
   const [newProfilePicture, setNewProfilePicture] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [showRequestEditConfirm, setShowRequestEditConfirm] = useState(false);
+  const [requestingEdit, setRequestingEdit] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -91,6 +93,32 @@ const UserProfile = () => {
     const reader = new FileReader();
     reader.onloadend = () => setPreviewUrl(reader.result as string);
     reader.readAsDataURL(file);
+  };
+
+  // Approved user confirms → call endpoint to flip status to Pending
+  const handleRequestEdit = async () => {
+    setRequestingEdit(true);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/user/request-edit`, {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setUser(updatedUser); setEditedUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setShowRequestEditConfirm(false);
+        setIsEditMode(true); // status is now Pending, edit mode opens normally
+      } else {
+        const data = await response.json();
+        alert(`Failed: ${data.message}`);
+      }
+    } catch {
+      alert('Error requesting edit. Please try again.');
+    } finally {
+      setRequestingEdit(false);
+    }
   };
 
   const handleSave = async () => {
@@ -149,6 +177,44 @@ const UserProfile = () => {
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
 
+      {/* Confirmation Dialog */}
+      {showRequestEditConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-yellow-500" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 text-sm font-fugaz">Request Profile Edit?</h3>
+                <p className="text-xs text-gray-500 font-work mt-1 leading-relaxed">
+                  Your profile status will be reset to <strong className="text-yellow-600">Pending</strong> and will require re-approval from the SK Admin before becoming active again.
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={handleRequestEdit}
+                disabled={requestingEdit}
+                className="flex-1 py-2.5 rounded-lg text-sm font-semibold text-white transition duration-200 font-fugaz tracking-[0.05em] disabled:opacity-50"
+                style={{ background: '#003459' }}
+                onMouseOver={(e) => { const b = e.currentTarget as HTMLButtonElement; if (!b.disabled) b.style.background = '#00171F'; }}
+                onMouseOut={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#003459'; }}
+              >
+                {requestingEdit ? 'Processing...' : 'Yes, Request Edit'}
+              </button>
+              <button
+                onClick={() => setShowRequestEditConfirm(false)}
+                disabled={requestingEdit}
+                className="flex-1 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg text-sm font-semibold transition font-fugaz"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Status Banner */}
       <div className={`rounded-2xl p-4 border flex items-center justify-between ${
         isPending
@@ -168,6 +234,8 @@ const UserProfile = () => {
             </p>
           </div>
         </div>
+
+        {/* Pending: normal Edit button */}
         {canEdit && !isEditMode && (
           <button
             onClick={handleEditToggle}
@@ -177,6 +245,16 @@ const UserProfile = () => {
             onMouseOut={(e) => ((e.currentTarget as HTMLButtonElement).style.background = '#003459')}
           >
             <Edit2 className="w-3.5 h-3.5" /> Edit
+          </button>
+        )}
+
+        {/* Approved: Request to Edit button triggers confirmation */}
+        {!isPending && !isEditMode && (
+          <button
+            onClick={() => setShowRequestEditConfirm(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-yellow-800 bg-yellow-100 hover:bg-yellow-200 transition duration-200 font-fugaz tracking-[0.05em]"
+          >
+            <Edit2 className="w-3.5 h-3.5" /> Request Edit
           </button>
         )}
       </div>
@@ -223,7 +301,6 @@ const UserProfile = () => {
 
       {/* Profile Form */}
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-        {/* Save / Cancel */}
         {isEditMode && canEdit && (
           <div className="px-5 py-4 border-b border-gray-100 flex gap-3">
             <button
@@ -246,7 +323,6 @@ const UserProfile = () => {
 
         <div className="p-5 space-y-6">
 
-          {/* Personal Information */}
           <Section title="Personal Information" icon={<User className="w-4 h-4 text-[#003459]" />}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Field label="First Name"  value={editedUser.firstName}  onChange={(v) => handleInputChange('firstName', v)}  editable={isEditMode && canEdit} />
@@ -266,7 +342,6 @@ const UserProfile = () => {
             </div>
           </Section>
 
-          {/* Address */}
           <Section title="Address" icon={<MapPin className="w-4 h-4 text-[#003459]" />}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <SelectField label="Purok" value={editedUser.purok}
@@ -280,7 +355,6 @@ const UserProfile = () => {
             </div>
           </Section>
 
-          {/* Classification */}
           <Section title="Classification">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <SelectField label="Youth Classification" value={editedUser.youthClassification}
@@ -292,7 +366,6 @@ const UserProfile = () => {
             </div>
           </Section>
 
-          {/* Additional Information */}
           <Section title="Additional Information">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <CheckboxField label="Registered SK Voter"          checked={editedUser.registeredSkVoter}       onChange={(v) => handleInputChange('registeredSkVoter', v)}       editable={isEditMode && canEdit} />
@@ -303,7 +376,6 @@ const UserProfile = () => {
             </div>
           </Section>
 
-          {/* Contact Information — always read-only */}
           <Section title="Contact Information">
             <div className="bg-[#003459]/5 border border-[#003459]/20 rounded-xl p-3 mb-3">
               <p className="text-xs text-[#003459] font-work">To update your email or contact number, please contact SK Admin directly.</p>
@@ -319,8 +391,6 @@ const UserProfile = () => {
     </div>
   );
 };
-
-// ── Helper Components ──
 
 const Section = ({ title, icon, children }: { title: string; icon?: React.ReactNode; children: React.ReactNode }) => (
   <div>

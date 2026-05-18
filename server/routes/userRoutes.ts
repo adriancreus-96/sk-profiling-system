@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import { getUserProfile, updateUserProfile } from '../controllers/userController';
 import { verifyUserToken } from '../middleware/authMiddleware';
+import { requestEdit } from '../controllers/userController';
 
 const router = express.Router();
 
@@ -34,5 +35,7 @@ router.get('/profile', verifyUserToken, getUserProfile);
 // Protected - requires valid user JWT token
 // Accepts optional profile picture upload
 router.put('/update-profile', verifyUserToken, upload.single('profilePicture'), updateUserProfile);
+
+router.put('/request-edit', verifyUserToken, requestEdit);
 
 export default router;

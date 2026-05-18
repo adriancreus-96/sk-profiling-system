@@ -9,7 +9,7 @@ import authRoutes from './routes/authRoutes';
 import adminRoutes from './routes/adminRoutes';
 import userRoutes from './routes/userRoutes';
 import eventRoutes from './routes/eventRoutes';
-import announcementRoutes from './routes/announcementRoutes'; // ← ADD
+import announcementRoutes from './routes/announcementRoutes'; 
 
 const app = express();
 

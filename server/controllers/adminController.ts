@@ -162,17 +162,20 @@ export const approveUser = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const currentYear = new Date().getFullYear();
-    const uniqueSuffix = randomUUID().split('-')[0].toUpperCase();
-    const generatedId = `SK-${currentYear}-${uniqueSuffix}`;
+    // Only generate a new SK ID if the user doesn't already have one
+    // (handles re-approval after a request-edit flow)
+    if (!user.skIdNumber) {
+      const currentYear = new Date().getFullYear();
+      const uniqueSuffix = randomUUID().split('-')[0].toUpperCase();
+      const generatedId = `SK-${currentYear}-${uniqueSuffix}`;
+      user.skIdNumber = generatedId;
+      user.qrCode = generatedId;
+    }
 
     user.status = 'Approved';
-    user.skIdNumber = generatedId;
-    user.qrCode = generatedId;
-
     await user.save();
 
-    res.json({ message: 'User Approved!', skIdNumber: generatedId, user });
+    res.json({ message: 'User Approved!', skIdNumber: user.skIdNumber, user });
   } catch (error) {
     res.status(500).json({ message: 'Server Error approving user' });
   }
