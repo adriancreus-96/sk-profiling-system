@@ -422,7 +422,7 @@ const CARD_MM_H = 53.98;
 const MARGIN_MM = 10;
 const PRINT_SCALE = (CARD_MM_W * 3.7795275591) / CARD_W;
 const PAPER_W_MM = 210;
-const FLIP_OFFSET_MM = -1.25
+const FLIP_OFFSET_MM = -0.7
 
 const PrintableSingleCard: React.FC<{ user: UserData; side: 'front' | 'back' }> = ({
   user,
@@ -445,7 +445,7 @@ const PrintableSingleCard: React.FC<{ user: UserData; side: 'front' | 'back' }> 
     height: `${CARD_MM_H}mm`,
     ...(side === 'front'
       ? { left: `${MARGIN_MM}mm` }
-      : { right: `${PAPER_W_MM - MARGIN_MM - CARD_MM_W + FLIP_OFFSET_MM}mm` }),
+      : { left: `${PAPER_W_MM - MARGIN_MM - CARD_MM_W + FLIP_OFFSET_MM}mm` }),
   };
 
   return (
