@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { 
-  X, MapPin, User as UserIcon, Calendar, Hash, Mail, Phone, 
+import {
+  X, MapPin, User as UserIcon, Calendar, Hash, Mail, Phone,
   GraduationCap, Briefcase, Heart, CheckCircle, Award, Home, Camera, Printer, Tag
 } from 'lucide-react';
 import axios from 'axios';
@@ -68,7 +68,7 @@ interface UserViewModalProps {
   onPrintComplete?: (userId: string) => Promise<void>;
 }
 
-const UserViewModal: React.FC<UserViewModalProps> = ({ 
+const UserViewModal: React.FC<UserViewModalProps> = ({
   user, isOpen, onClose, isEditMode = false,
   onEdit, onSave, onCancelEdit, onApprove, onReject, onPrintComplete
 }) => {
@@ -237,9 +237,8 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
               type="date" value={dateValue}
               onChange={e => handleInputChange(field, new Date(e.target.value))}
               min={birthdayConstraints.min} max={birthdayConstraints.max}
-              className={`w-full font-medium text-[#00171F] bg-white px-3 py-2.5 rounded-lg border-2 focus:outline-none font-work ${
-                ageError && field === 'birthday' ? 'border-red-500 focus:border-red-600' : 'border-[#5CB0B3] focus:border-[#007EA7]'
-              }`}
+              className={`w-full font-medium text-[#00171F] bg-white px-3 py-2.5 rounded-lg border-2 focus:outline-none font-work ${ageError && field === 'birthday' ? 'border-red-500 focus:border-red-600' : 'border-[#5CB0B3] focus:border-[#007EA7]'
+                }`}
             />
             {ageError && field === 'birthday' && <p className="text-sm text-red-600 font-medium font-work">{ageError}</p>}
           </div>
@@ -285,11 +284,10 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
           {Icon && <Icon className="w-3 h-3" />}{label}
           {isProtected && <span className="text-orange-500 text-[10px]">(Protected)</span>}
         </label>
-        <div className={`font-medium px-3 py-2.5 rounded-lg border font-work ${
-          isProtected
+        <div className={`font-medium px-3 py-2.5 rounded-lg border font-work ${isProtected
             ? 'text-gray-500 bg-gray-100 border-2 border-gray-300'
             : 'text-[#00171F] bg-gray-50 border border-gray-200'
-        }`}>
+          }`}>
           {value || 'N/A'}
         </div>
       </div>
@@ -338,12 +336,11 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
             <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-[#EAF4F7] text-[#007EA7] border border-[#B3D9E5] font-work">
               <Hash className="w-3.5 h-3.5 mr-1" />{user.skIdNumber || 'No ID Assigned'}
             </span>
-            <span className={`inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold border-2 font-work ${
-              user.status === 'Approved' ? 'bg-green-50 text-green-700 border-green-300'
-              : user.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-300'
-              : user.status === 'Archived' ? 'bg-orange-50 text-orange-700 border-orange-300'
-              : 'bg-yellow-50 text-yellow-700 border-yellow-300'
-            }`}>{user.status}</span>
+            <span className={`inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold border-2 font-work ${user.status === 'Approved' ? 'bg-green-50 text-green-700 border-green-300'
+                : user.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-300'
+                  : user.status === 'Archived' ? 'bg-orange-50 text-orange-700 border-orange-300'
+                    : 'bg-yellow-50 text-yellow-700 border-yellow-300'
+              }`}>{user.status}</span>
             {user.points !== undefined && (
               <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-[#EAF4F7] text-[#003459] border border-[#B3D9E5] font-work">
                 <Award className="w-3.5 h-3.5 mr-1" />{user.points} Points
@@ -367,7 +364,7 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
           <InfoField label="Birthday (Age 15–30)" value={user.birthday ? formatDate(user.birthday) : undefined} field="birthday" type="date" icon={Calendar} />
           <InfoField label="Age" value={user.age} />
           <InfoField label="Youth Age Group" value={user.youthAgeGroup} />
-          <InfoField label="Civil Status" value={user.civilStatus} field="civilStatus" type="select" options={['Single','Married','Widowed','Separated','Live-in','Annulled','Others']} icon={Heart} />
+          <InfoField label="Civil Status" value={user.civilStatus} field="civilStatus" type="select" options={['Single', 'Married', 'Widowed', 'Separated', 'Live-in', 'Annulled', 'Others']} icon={Heart} />
         </div>
       </div>
 
@@ -392,7 +389,7 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
           <InfoField label="Lot" value={user.lot} field="lot" />
           <InfoField label="House Number" value={user.houseNumber} field="houseNumber" />
           <InfoField label="Street" value={user.street} field="street" />
-          <InfoField label="Purok" value={user.purok} field="purok" type="select" options={['Purok 1','Purok 2','Purok 3','Purok 4','Purok 5','Purok 6','Purok 7']} icon={Home} />
+          <InfoField label="Purok" value={user.purok} field="purok" type="select" options={['Purok 1', 'Purok 2', 'Purok 3', 'Purok 4', 'Purok 5', 'Purok 6', 'Purok 7']} icon={Home} />
         </div>
         <div className="mt-4"><InfoField label="Full Address" value={getFullAddress()} icon={MapPin} /></div>
       </div>
@@ -404,11 +401,11 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
         </h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InfoField label="Educational Background" value={user.educationalBackground} field="educationalBackground" type="select"
-            options={['Elementary Level','Elementary Grad','High School Level','High School Grad','Vocational Grad','College Level','College Grad','Masters Level','Masters Grad','Doctorate Level','Doctorate Graduate']} icon={GraduationCap} />
+            options={['Elementary Level', 'Elementary Grad', 'High School Level', 'High School Grad', 'Vocational Grad', 'College Level', 'College Grad', 'Masters Level', 'Masters Grad', 'Doctorate Level', 'Doctorate Graduate']} icon={GraduationCap} />
           <InfoField label="Youth Classification" value={user.youthClassification} field="youthClassification" type="select"
-            options={['In School Youth','Out of School Youth','Working Youth','Youth with Specific Needs']} />
+            options={['In School Youth', 'Out of School Youth', 'Working Youth', 'Youth with Specific Needs']} />
           <InfoField label="Work Status" value={user.workStatus} field="workStatus" type="select"
-            options={['Employed','Unemployed','Self-Employed','Currently looking for a Job','Not Interested Looking for a Job']} icon={Briefcase} />
+            options={['Employed', 'Unemployed', 'Self-Employed', 'Currently looking for a Job', 'Not Interested Looking for a Job']} icon={Briefcase} />
         </div>
       </div>
 
@@ -527,9 +524,8 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
               <div className="flex gap-4">
                 {(['profile', 'events'] as const).map(tab => (
                   <button key={tab} onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-3 font-semibold font-work transition-colors relative flex items-center gap-2 ${
-                      activeTab === tab ? 'text-[#007EA7] border-b-2 border-[#007EA7]' : 'text-gray-500 hover:text-gray-700'
-                    }`}>
+                    className={`px-4 py-3 font-semibold font-work transition-colors relative flex items-center gap-2 ${activeTab === tab ? 'text-[#007EA7] border-b-2 border-[#007EA7]' : 'text-gray-500 hover:text-gray-700'
+                      }`}>
                     {tab === 'profile' ? 'Profile Information' : 'Events Attended'}
                     {tab === 'events' && eventsAttended.length > 0 && (
                       <span className="bg-[#EAF4F7] text-[#007EA7] text-xs font-bold px-2 py-0.5 rounded-full">
@@ -603,8 +599,18 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
       </div>
 
       {showPrintModal && (
-        <PrintIDModule user={user} onClose={() => setShowPrintModal(false)} onPrintComplete={onPrintComplete} />
-      )}
+        <PrintIDModule
+          user={user}
+          onClose={() => setShowPrintModal(false)}
+          onPrintComplete={onPrintComplete}
+          onMarkPrinted={async (userId) => {
+            const token = localStorage.getItem('adminToken');
+            await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/mark-printed`, {
+              method: 'POST',
+              headers: { Authorization: `Bearer ${token}` },
+            });
+          }}
+        />)}
     </>
   );
 

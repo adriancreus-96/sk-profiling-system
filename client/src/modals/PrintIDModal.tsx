@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { QRCodeSVG } from 'qrcode.react';
-import { X } from 'lucide-react';
+import { X, CheckCircle2 } from 'lucide-react';
 import { type UserData } from './UserViewModal';
 
 
@@ -15,6 +15,7 @@ interface PrintIDModuleProps {
   user: UserData;
   onClose: () => void;
   onPrintComplete?: (userId: string) => Promise<void>;
+  onMarkPrinted?: (userId: string) => Promise<void>;
 }
 
 // ---------- shared formatters ----------
@@ -53,9 +54,12 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({
   user,
   onClose,
   onPrintComplete,
+  onMarkPrinted,
 }) => {
   const [isPrinting, setIsPrinting] = useState(false);
   const [printMode, setPrintMode] = useState<'front' | 'back'>('front');
+  const [isMarking, setIsMarking] = useState(false);
+  const [isMarked, setIsMarked] = useState(user.idPrinted ?? false);
 
   const frontRef = useRef<HTMLDivElement>(null);
   const backRef = useRef<HTMLDivElement>(null);
@@ -88,20 +92,70 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({
     },
   });
 
+  const handleMarkPrinted = async () => {
+    if (isMarked || isMarking || !onMarkPrinted) return;
+    const confirmed = window.confirm(
+      `Mark ${user.firstName} ${user.lastName}'s ID as printed? This cannot be undone.`,
+    );
+    if (!confirmed) return;
+    setIsMarking(true);
+    try {
+      await onMarkPrinted(user._id);
+      setIsMarked(true);
+    } catch {
+      alert('Failed to mark ID as printed. Please try again.');
+    } finally {
+      setIsMarking(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl px-7 py-8 max-w-2xl w-full lg:px-10 lg:py-10 max-h-[95vh] overflow-y-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-[#00171F] font-fugaz [filter:drop-shadow(0px_2px_50px_#000000)]">
-            Print SK ID Card
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-bold text-[#00171F] font-fugaz [filter:drop-shadow(0px_2px_50px_#000000)]">
+              Print SK ID Card
+            </h2>
+            {/* Printed status badge */}
+            {isMarked && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                ID Printed
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {/* Mark as printed checkmark button */}
+            {onMarkPrinted && (
+              <button
+                onClick={handleMarkPrinted}
+                disabled={isMarked || isMarking || isPrinting}
+                title={isMarked ? 'Already marked as printed' : 'Mark ID as printed'}
+                className={`
+                  flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold border-2 transition-all duration-200
+                  ${isMarked
+                    ? 'bg-emerald-50 border-emerald-300 text-emerald-600 cursor-not-allowed opacity-70'
+                    : 'bg-white border-gray-300 text-gray-600 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50'}
+                  disabled:cursor-not-allowed
+                `}
+              >
+                {isMarking ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-emerald-500" />
+                ) : (
+                  <CheckCircle2 className={`w-4 h-4 ${isMarked ? 'text-emerald-500' : 'text-gray-400'}`} />
+                )}
+                {isMarked ? 'Marked as Printed' : 'Mark as Printed'}
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Preview */}
