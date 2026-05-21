@@ -4,8 +4,6 @@ import { QRCodeSVG } from 'qrcode.react';
 import { X, CheckCircle2 } from 'lucide-react';
 import { type UserData } from './UserViewModal';
 
-
-// Place the SVG templates in your /public folder (e.g. /public/id-front.svg, /public/id-back.svg)
 import idFrontSvg from '../assets/3.png';
 import idBackSvg from '../assets/4.png';
 
@@ -38,7 +36,6 @@ const formatMMDDYYYY = (d: Date | string) => {
 const formatIssuance = (user: UserData) =>
   formatMMDDYYYY(user.dateApproved ?? new Date());
 
-// Expiration is fixed at 02/27 per spec
 const EXPIRATION_DATE = '02/27';
 
 const getProfilePicture = (user: UserData) => {
@@ -118,7 +115,6 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({
             <h2 className="text-2xl font-bold text-[#00171F] font-fugaz [filter:drop-shadow(0px_2px_50px_#000000)]">
               Print SK ID Card
             </h2>
-            {/* Printed status badge */}
             {isMarked && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200">
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -127,7 +123,6 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({
             )}
           </div>
           <div className="flex items-center gap-2">
-            {/* Mark as printed checkmark button */}
             {onMarkPrinted && (
               <button
                 onClick={handleMarkPrinted}
@@ -166,7 +161,7 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({
           </div>
         </div>
 
-        {/* Buttons — Print Front | Print Back | Cancel (left to right) */}
+        {/* Buttons */}
         <div className="flex gap-3 justify-end">
           <button
             onClick={onClose}
@@ -231,7 +226,7 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({
           </button>
         </div>
 
-        {/* Hidden printables — one ref per side, each a single page */}
+        {/* Hidden printables */}
         <div style={{ display: 'none' }}>
           <div ref={frontRef}>
             <PrintableSingleCard user={user} side="front" />
@@ -246,10 +241,9 @@ const PrintIDModule: React.FC<PrintIDModuleProps> = ({
 };
 
 // ============================================================
-// CARD RENDERER — single source of truth for the layout.
-// Base card is 1011 × 638 px (matches your SVG aspect ratio).
-// We scale uniformly via a wrapper transform so it works in
-// both the on-screen preview and the printed page.
+// CARD RENDERER
+// Base card is 1011 × 638 px. Scaled via transform for both
+// on-screen preview and print.
 // ============================================================
 
 const CARD_W = 1011;
@@ -284,31 +278,13 @@ const IDCardFront: React.FC<IDCardProps> = ({ user, scale = 1 }) => {
           fontFamily: "'Albert Sans', 'Arial Black', sans-serif",
         }}
       >
-        {/* Background template */}
         <img
           src={idFrontSvg}
           alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
 
-        {/* Profile photo — overlays the white box on the SVG */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 71,
-            top: 127,
-            width: 272,
-            height: 363,
-            overflow: 'hidden',
-            background: '#fff',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 71, top: 127, width: 272, height: 363, overflow: 'hidden', background: '#fff' }}>
           <img
             src={getProfilePicture(user)}
             alt="Profile"
@@ -320,173 +296,43 @@ const IDCardFront: React.FC<IDCardProps> = ({ user, scale = 1 }) => {
           />
         </div>
 
-        {/* SURNAME value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 373,
-            top: 170,
-            fontSize: 27,
-            fontWeight: 700,
-            color: '#FFFFF0',
-            letterSpacing: '0.02em',
-            lineHeight: 1.1,
-            maxWidth: 626 - 373 - 16,
-            whiteSpace: 'nowrap',
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 373, top: 170, fontSize: 27, fontWeight: 700, color: '#FFFFF0', letterSpacing: '0.02em', lineHeight: 1.1, maxWidth: 626 - 373 - 16, whiteSpace: 'nowrap', textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
           {user.lastName.toUpperCase()}
         </div>
 
-        {/* FIRST NAME value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 628,
-            top: 170,
-            fontSize: 26,
-            fontWeight: 700,
-            color: '#FFFFF0',
-            letterSpacing: '0.02em',
-            lineHeight: 1.1,
-            maxWidth: 888 - 626 - 16,
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 628, top: 170, fontSize: 26, fontWeight: 700, color: '#FFFFF0', letterSpacing: '0.02em', lineHeight: 1.1, maxWidth: 888 - 626 - 16, textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
           {user.firstName.toUpperCase()}
         </div>
 
-        {/* M.I. value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 886,
-            top: 165,
-            fontSize: 26,
-            fontWeight: 700,
-            color: '#FFFFF0',
-            letterSpacing: '0.02em',
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
-          {(user.middleName?.charAt(0) || '').toUpperCase()}
-          {user.middleName ? '.' : ''}
+        <div style={{ position: 'absolute', left: 886, top: 165, fontSize: 26, fontWeight: 700, color: '#FFFFF0', letterSpacing: '0.02em', textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
+          {(user.middleName?.charAt(0) || '').toUpperCase()}{user.middleName ? '.' : ''}
         </div>
 
-        {/* BIRTH DATE value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 373,
-            top: 257,
-            fontSize: 26,
-            fontWeight: 700,
-            color: '#FFFFF0',
-            letterSpacing: '0.02em',
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 373, top: 257, fontSize: 26, fontWeight: 700, color: '#FFFFF0', letterSpacing: '0.02em', textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
           {formatMMDDYYYY(user.birthday)}
         </div>
 
-        {/* SEX value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 742,
-            top: 257,
-            fontSize: 26,
-            fontWeight: 700,
-            color: '#FFFFF0',
-            letterSpacing: '0.02em',
-            maxWidth: 220,
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 742, top: 257, fontSize: 26, fontWeight: 700, color: '#FFFFF0', letterSpacing: '0.02em', maxWidth: 220, textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
           {user.sex.toUpperCase()}
         </div>
 
-        {/* SUFFIX value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 888,
-            top: 257,
-            fontSize: 26,
-            fontWeight: 700,
-            color: '#FFFFF0',
-            letterSpacing: '0.02em',
-            maxWidth: 110,
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 888, top: 257, fontSize: 26, fontWeight: 700, color: '#FFFFF0', letterSpacing: '0.02em', maxWidth: 110, textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
           {(user.suffix && user.suffix.trim()) ? user.suffix.toUpperCase() : '-'}
         </div>
 
-        {/* ADDRESS value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 373,
-            top: 347,
-            fontSize: 26,
-            fontWeight: 700,
-            color: '#fffff0',
-            letterSpacing: '0.02em',
-            maxWidth: 580,
-            whiteSpace: 'nowrap',
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 373, top: 347, fontSize: 26, fontWeight: 700, color: '#fffff0', letterSpacing: '0.02em', maxWidth: 580, whiteSpace: 'nowrap', textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
           {formatAddress(user)}
         </div>
 
-        {/* ISSUANCE DATE value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 373,
-            top: 435,
-            fontSize: 26,
-            fontWeight: 700,
-            color: '#FFFFF0',
-            letterSpacing: '0.02em',
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 373, top: 435, fontSize: 26, fontWeight: 700, color: '#FFFFF0', letterSpacing: '0.02em', textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
           {formatIssuance(user)}
         </div>
 
-        {/* EXPIRATION DATE value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 626,
-            top: 435,
-            fontSize: 26,
-            fontWeight: 700,
-            color: '#FFFFF0',
-            letterSpacing: '0.02em',
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 626, top: 435, fontSize: 26, fontWeight: 700, color: '#FFFFF0', letterSpacing: '0.02em', textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
           {EXPIRATION_DATE}
         </div>
 
-        {/* SK ID value */}
-        <div
-          style={{
-            position: 'absolute',
-            left: 55,
-            top: 543,
-            fontSize: 30,
-            fontWeight: 700,
-            color: '#FFFFF0',
-            letterSpacing: '0.02em',
-            textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)',
-          }}
-        >
+        <div style={{ position: 'absolute', left: 55, top: 543, fontSize: 30, fontWeight: 700, color: '#FFFFF0', letterSpacing: '0.02em', textShadow: '0px 1px 0px rgba(0,0,0,0.8), 0px 2px 8px rgba(0,0,0,0.9)' }}>
           {(user.skIdNumber || '2025-XXXX').toUpperCase()}
         </div>
       </div>
@@ -499,7 +345,6 @@ const IDCardBack: React.FC<IDCardProps> = ({ user, scale = 1 }) => {
   const QR_BOX_TOP = 136;
   const QR_BOX_W = 360;
   const QR_BOX_H = 405;
-
   const QR_SIZE = 360;
   const QR_LEFT = QR_BOX_LEFT + (QR_BOX_W - QR_SIZE) / 2;
   const QR_TOP = QR_BOX_TOP + (QR_BOX_H - QR_SIZE) / 2;
@@ -529,16 +374,9 @@ const IDCardBack: React.FC<IDCardProps> = ({ user, scale = 1 }) => {
         <img
           src={idBackSvg}
           alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-          }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
         />
 
-        {/* QR code fitted into the square slot */}
         <div
           style={{
             position: 'absolute',
@@ -558,10 +396,7 @@ const IDCardBack: React.FC<IDCardProps> = ({ user, scale = 1 }) => {
             level="H"
             fgColor="#02171f"
             bgColor="transparent"
-            style={{
-              borderRadius: 16,
-              clipPath: 'inset(0 round 16px)',
-            }}
+            style={{ borderRadius: 16, clipPath: 'inset(0 round 16px)' }}
           />
         </div>
       </div>
@@ -570,83 +405,58 @@ const IDCardBack: React.FC<IDCardProps> = ({ user, scale = 1 }) => {
 };
 
 // ============================================================
-// PRINTABLE SINGLE CARD — one page, centered, front OR back.
+// PRINTABLE SINGLE CARD
+//
+// FRONT: anchored top-left  (10 mm from top & left edges)
+// BACK:  anchored top-right (10 mm from top & right edges)
+//
+// Workflow:
+//   1. Print Front  → card is top-left
+//   2. Flip paper left→right, same top edge into printer
+//   3. Print Back   → lands directly behind the front
+//   4. Cut along the dashed guide lines
 // ============================================================
+
+const CARD_MM_W = 85.6;
+const CARD_MM_H = 53.98;
+const MARGIN_MM = 10;
+const PRINT_SCALE = (CARD_MM_W * 3.7795275591) / CARD_W;
+
 
 const PrintableSingleCard: React.FC<{ user: UserData; side: 'front' | 'back' }> = ({
   user,
   side,
 }) => {
-  const CARD_MM_W = 85.6;
-  const PRINT_SCALE = (CARD_MM_W * 3.7795275591) / CARD_W;
-
   const pageStyle: React.CSSProperties = {
     width: '210mm',
     height: '297mm',
     margin: 0,
     padding: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: 'relative',
     boxSizing: 'border-box',
+    background: '#fff',
+  };
+
+  const cardContainerStyle: React.CSSProperties = {
+    position: 'absolute',
+    top: `${MARGIN_MM}mm`,
+    width: `${CARD_MM_W}mm`,
+    height: `${CARD_MM_H}mm`,
+    ...(side === 'front'
+      ? { left: `${MARGIN_MM}mm` }
+      : { right: `${MARGIN_MM}mm` }),
   };
 
   return (
     <div style={pageStyle}>
-      {side === 'front' ? (
-        <IDCardFront user={user} scale={PRINT_SCALE} />
-      ) : (
-        <IDCardBack user={user} scale={PRINT_SCALE} />
-      )}
+      <div style={cardContainerStyle}>
+        {side === 'front'
+          ? <IDCardFront user={user} scale={PRINT_SCALE} />
+          : <IDCardBack user={user} scale={PRINT_SCALE} />}
+        {/* <CutGuide /> */}
+      </div>
     </div>
   );
 };
-
-// ============================================================
-// PRINTABLE (both pages) — kept for reference, unused now.
-// ============================================================
-
-/*
-const PrintableIDCard: React.FC<{ user: UserData }> = ({ user }) => {
-  const CARD_MM_W = 85.6;
-  const CARD_MM_H = 53.98;
-
-  const pageStyle: React.CSSProperties = {
-    width: '210mm',
-    height: '297mm',
-    margin: 0,
-    padding: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxSizing: 'border-box',
-  };
-
-  const cardWrapper = (_child: React.ReactNode): React.CSSProperties => ({
-    width: `${CARD_MM_W}mm`,
-    height: `${CARD_MM_H}mm`,
-    position: 'relative',
-    overflow: 'hidden',
-  });
-
-  const PRINT_SCALE = (CARD_MM_W * 3.7795275591) / CARD_W;
-
-  return (
-    <>
-      <div style={{ ...pageStyle, pageBreakAfter: 'always' }}>
-        <div style={cardWrapper(null)}>
-          <IDCardFront user={user} scale={PRINT_SCALE} />
-        </div>
-      </div>
-
-      <div style={pageStyle}>
-        <div style={cardWrapper(null)}>
-          <IDCardBack user={user} scale={PRINT_SCALE} />
-        </div>
-      </div>
-    </>
-  );
-};
-*/
 
 export default PrintIDModule;
