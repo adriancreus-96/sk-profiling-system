@@ -198,7 +198,7 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
   const displayPictureUrl = previewUrl || editedUser.profilePicture || user.profilePicture || '';
   const canEditPicture = isEditMode && (user.status === 'Pending' || user.status === 'Approved');
   const canEditUser = user.status === 'Pending' || user.status === 'Approved';
-  const canPrintID = user.status === 'Approved' && user.skIdNumber && !user.idPrinted;
+ //const canPrintID = user.status === 'Approved' && user.skIdNumber && !user.idPrinted;
 
   const InfoField = ({ label, value, icon: Icon, field, type = 'text', options }: {
     label: string; value: string | number | undefined; icon?: any;
