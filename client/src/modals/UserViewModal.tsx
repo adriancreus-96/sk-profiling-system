@@ -285,8 +285,8 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
           {isProtected && <span className="text-orange-500 text-[10px]">(Protected)</span>}
         </label>
         <div className={`font-medium px-3 py-2.5 rounded-lg border font-work ${isProtected
-            ? 'text-gray-500 bg-gray-100 border-2 border-gray-300'
-            : 'text-[#00171F] bg-gray-50 border border-gray-200'
+          ? 'text-gray-500 bg-gray-100 border-2 border-gray-300'
+          : 'text-[#00171F] bg-gray-50 border border-gray-200'
           }`}>
           {value || 'N/A'}
         </div>
@@ -337,9 +337,9 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
               <Hash className="w-3.5 h-3.5 mr-1" />{user.skIdNumber || 'No ID Assigned'}
             </span>
             <span className={`inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold border-2 font-work ${user.status === 'Approved' ? 'bg-green-50 text-green-700 border-green-300'
-                : user.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-300'
-                  : user.status === 'Archived' ? 'bg-orange-50 text-orange-700 border-orange-300'
-                    : 'bg-yellow-50 text-yellow-700 border-yellow-300'
+              : user.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-300'
+                : user.status === 'Archived' ? 'bg-orange-50 text-orange-700 border-orange-300'
+                  : 'bg-yellow-50 text-yellow-700 border-yellow-300'
               }`}>{user.status}</span>
             {user.points !== undefined && (
               <span className="inline-flex items-center px-3 py-1 rounded-lg text-sm font-medium bg-[#EAF4F7] text-[#003459] border border-[#B3D9E5] font-work">
@@ -564,15 +564,13 @@ const UserViewModal: React.FC<UserViewModalProps> = ({
                   Close
                 </button>
                 <div className="flex gap-3">
-                  {canPrintID && (
-                    <button onClick={() => setShowPrintModal(true)}
-                      className="px-6 py-2.5 text-sm font-semibold text-white rounded-lg transition duration-200 shadow-md font-fugaz tracking-[0.05em] flex items-center gap-2"
-                      style={{ background: '#003459' }}
-                      onMouseOver={e => (e.currentTarget.style.background = '#00171F')}
-                      onMouseOut={e => (e.currentTarget.style.background = '#003459')}>
-                      <Printer className="w-4 h-4" />Print ID
-                    </button>
-                  )}
+                  <button onClick={() => setShowPrintModal(true)}
+                    className="px-6 py-2.5 text-sm font-semibold text-white rounded-lg transition duration-200 shadow-md font-fugaz tracking-[0.05em] flex items-center gap-2"
+                    style={{ background: '#003459' }}
+                    onMouseOver={e => (e.currentTarget.style.background = '#00171F')}
+                    onMouseOut={e => (e.currentTarget.style.background = '#003459')}>
+                    <Printer className="w-4 h-4" />Print ID
+                  </button>
                   {onEdit && canEditUser && (
                     <button onClick={() => onEdit(user._id)}
                       className="px-6 py-2.5 text-sm font-semibold text-[#007EA7] bg-[#EAF4F7] border-2 border-[#B3D9E5] rounded-lg hover:bg-[#d4eef4] transition-colors shadow-sm font-work">
